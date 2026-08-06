@@ -233,6 +233,11 @@ export default function IntroAnimation() {
     return (
         <div ref={containerRef} className="relative w-full h-full bg-[#e5e5e5] overflow-hidden" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
             
+            {/* Top Banner Strip */}
+            <div className="absolute top-0 left-0 w-full h-[60px] md:h-[100px] z-50 border-b-4 border-black bg-[#c0c0c0]">
+                <img src="/banner.jpg" alt="Top Banner" className="w-full h-full object-cover opacity-80 mix-blend-multiply" />
+            </div>
+            
             {/* Background Overlay when zoomed */}
             {selectedImage !== null && (
                 <motion.div 
