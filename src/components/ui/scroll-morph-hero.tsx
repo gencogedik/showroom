@@ -58,9 +58,8 @@ function FlipCard({
                 whileHover={!isAnySelected ? { rotateY: 180 } : undefined}
                 animate={isSelected ? { rotateY: 0 } : undefined}
             >
-                {/* Front Face */}
                 <div
-                    className="absolute inset-0 h-full w-full overflow-hidden bg-white border-2 border-black shadow-[4px_4px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] transition-shadow duration-300 flex items-center justify-center p-2"
+                    className="absolute inset-0 h-full w-full overflow-hidden bg-white border-2 border-black shadow-[4px_4px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] transition-shadow duration-300 flex items-center justify-center"
                     style={{ backfaceVisibility: "hidden" }}
                 >
                     <img
@@ -178,15 +177,16 @@ export default function IntroAnimation() {
         };
     }, [virtualScroll, selectedImage]);
 
-    const scrollRotate = useTransform(virtualScroll, [0, 2000], [0, 360]); 
-    const smoothScrollRotate = useSpring(scrollRotate, { stiffness: 40, damping: 20 });
+    // Map scroll strictly from 0 to 2500 to a normalized progress 0 to 1
+    const scrollProgress = useTransform(virtualScroll, [0, 2500], [0, 1]); 
+    const smoothScrollProgress = useSpring(scrollProgress, { stiffness: 40, damping: 20 });
     
-    // Logo Reveal Logic
-    const logoOpacity = useTransform(virtualScroll, [2600, 2900], [0, 1]);
-    const logoScale = useTransform(virtualScroll, [2600, 2900], [0.5, 1]);
-    const logoY = useTransform(virtualScroll, [2600, 2900], [50, 0]);
-    // Fade out text when logo appears
-    const introTextOpacity = useTransform(virtualScroll, [2000, 2500], [1, 0]);
+    // Logo Reveal Logic exactly after rotation finishes (2500)
+    const logoOpacity = useTransform(virtualScroll, [2500, 2800], [0, 1]);
+    const logoScale = useTransform(virtualScroll, [2500, 2800], [0.5, 1]);
+    const logoY = useTransform(virtualScroll, [2500, 2800], [50, 0]);
+    // Fade out text gradually as we scroll towards the end
+    const introTextOpacity = useTransform(virtualScroll, [1500, 2500], [1, 0]);
 
     const mouseX = useMotionValue(0);
     const smoothMouseX = useSpring(mouseX, { stiffness: 30, damping: 20 });
@@ -214,17 +214,17 @@ export default function IntroAnimation() {
         }));
     }, []);
 
-    const [rotateValue, setRotateValue] = useState(0);
+    const [progressValue, setProgressValue] = useState(0);
     const [parallaxValue, setParallaxValue] = useState(0);
 
     useEffect(() => {
-        const unsubscribeRotate = smoothScrollRotate.on("change", setRotateValue);
+        const unsubscribeRotate = smoothScrollProgress.on("change", setProgressValue);
         const unsubscribeParallax = smoothMouseX.on("change", setParallaxValue);
         return () => {
             unsubscribeRotate();
             unsubscribeParallax();
         };
-    }, [smoothScrollRotate, smoothMouseX]);
+    }, [smoothScrollProgress, smoothMouseX]);
 
     const handleImageClick = (index: number) => {
         setSelectedImage(prev => prev === index ? null : index);
@@ -292,20 +292,25 @@ export default function IntroAnimation() {
                         } else {
                             // Immediate Arc Logic (No intro phase)
                             const baseRadius = Math.min(containerSize.width, containerSize.height * 1.5);
-                            const arcRadius = baseRadius * (isMobileDevice ? 1.4 : 1.1); 
+                            // Push radius massive on mobile so exactly ~3 fit
+                            const arcRadius = baseRadius * (isMobileDevice ? 2.5 : 1.1); 
                             
                             // Push arc center down slightly more on mobile for better spacing
                             const arcApexY = containerSize.height * (isMobileDevice ? 0.45 : 0.25);
                             const arcCenterY = arcApexY + arcRadius;
                             
-                            const spreadAngle = isMobileDevice ? 80 : 130;
-                            const startAngle = -90 - (spreadAngle / 2);
+                            // Spread items wide on mobile (360) so only a few fit in the screen viewport
+                            const spreadAngle = isMobileDevice ? 360 : 130;
+                            // Apex is at -90. The first item should start at apex.
+                            const startAngle = -90;
                             const step = spreadAngle / (TOTAL_IMAGES - 1);
                             
-                            // Use pure unbounded rotation to prevent popping/snapping at 360 boundaries
-                            const boundedRotation = -rotateValue; 
+                            // Math lock: Progress goes 0 -> 1. Rotation strictly goes 0 -> spreadAngle.
+                            // This ensures item 20 stops exactly at the apex.
+                            const boundedRotation = progressValue * spreadAngle; 
                             
-                            let currentArcAngle = startAngle + (i * step) + boundedRotation;
+                            // Subtract boundedRotation so we slide leftwards and bring rightmost items to apex
+                            let currentArcAngle = startAngle + (i * step) - boundedRotation;
                             
                             const arcRad = (currentArcAngle * Math.PI) / 180;
                             const arcPos = {
