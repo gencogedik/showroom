@@ -67,11 +67,20 @@ function FlipCard({
                     className="absolute inset-0 h-full w-full overflow-hidden bg-white border-2 border-black shadow-[4px_4px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] transition-shadow duration-300"
                     style={{ backfaceVisibility: "hidden" }}
                 >
+                    {/* The Image */}
                     <img
                         src={src}
                         alt={`hero-${index}`}
-                        className="h-full w-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500"
+                        className={`h-full w-full object-cover transition-all duration-1000 ${
+                            isSelected 
+                                ? "filter-none scale-100" // Pure colors when zoomed
+                                : "max-md:filter-none md:blur-[1px] md:brightness-90 md:contrast-[1.1] md:group-hover:filter-none md:group-hover:scale-110" 
+                        }`}
                     />
+                    {/* Optional grain overlay for desktop only (CSS noise) */}
+                    {!isSelected && (
+                        <div className="absolute inset-0 opacity-20 md:opacity-40 pointer-events-none hidden md:block" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+                    )}
                 </div>
 
                 {/* Back Face */}
@@ -80,7 +89,7 @@ function FlipCard({
                     style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
                 >
                     <div className="text-center">
-                        <p className="text-xs font-black text-black uppercase tracking-widest font-mono">X-RAY</p>
+                        <p className="text-xs font-black text-black uppercase tracking-widest font-mono">TEXTURE</p>
                         <div className="w-full h-[2px] bg-black my-2" />
                         <p className="text-[10px] font-bold text-black uppercase font-mono tracking-tighter">İncele</p>
                     </div>
@@ -100,23 +109,25 @@ export default function IntroAnimation() {
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
+    const [isMobileDevice, setIsMobileDevice] = useState(false);
 
     useEffect(() => {
         if (!containerRef.current) return;
         const handleResize = (entries: ResizeObserverEntry[]) => {
             for (const entry of entries) {
-                setContainerSize({
-                    width: entry.contentRect.width,
-                    height: entry.contentRect.height,
-                });
+                const width = entry.contentRect.width;
+                setContainerSize({ width, height: entry.contentRect.height });
+                setIsMobileDevice(width < 768);
             }
         };
         const observer = new ResizeObserver(handleResize);
         observer.observe(containerRef.current);
+        const initialWidth = containerRef.current.offsetWidth;
         setContainerSize({
-            width: containerRef.current.offsetWidth,
+            width: initialWidth,
             height: containerRef.current.offsetHeight,
         });
+        setIsMobileDevice(initialWidth < 768);
         return () => observer.disconnect();
     }, []);
 
@@ -135,19 +146,38 @@ export default function IntroAnimation() {
             virtualScroll.set(newScroll);
         };
 
+        // Touch interactions
+        let touchStartX = 0;
         let touchStartY = 0;
+        let lastScroll = 0;
+        
         const handleTouchStart = (e: TouchEvent) => {
             if (selectedImage !== null) return;
+            touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
+            lastScroll = scrollRef.current;
         };
         const handleTouchMove = (e: TouchEvent) => {
             if (selectedImage !== null) return;
+            const touchX = e.touches[0].clientX;
             const touchY = e.touches[0].clientY;
+            
+            // On mobile, horizontal swipe spins the wheel
+            // Fallback to vertical swipe just in case
+            const deltaX = touchStartX - touchX;
             const deltaY = touchStartY - touchY;
-            touchStartY = touchY;
-            const newScroll = Math.min(Math.max(scrollRef.current + deltaY, 0), MAX_SCROLL);
+            
+            // Use whichever delta is larger to drive the scroll, but horizontal is preferred for the wheel feel.
+            const primaryDelta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
+            
+            const newScroll = Math.min(Math.max(lastScroll + primaryDelta * 3, 0), MAX_SCROLL); // multiplier for speed
             scrollRef.current = newScroll;
             virtualScroll.set(newScroll);
+            
+            // Prevent default scrolling only if we are interacting with the wheel significantly
+            if (Math.abs(primaryDelta) > 5) {
+                e.preventDefault();
+            }
         };
 
         container.addEventListener("wheel", handleWheel, { passive: false });
@@ -190,8 +220,10 @@ export default function IntroAnimation() {
     }, [mouseX]);
 
     useEffect(() => {
-        const timer1 = setTimeout(() => setIntroPhase("line"), 500);
-        const timer2 = setTimeout(() => setIntroPhase("circle"), 2500);
+        // Fast forward intro on mobile
+        const isMobile = window.innerWidth < 768;
+        const timer1 = setTimeout(() => setIntroPhase("line"), isMobile ? 100 : 500);
+        const timer2 = setTimeout(() => setIntroPhase("circle"), isMobile ? 300 : 2500);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }, []);
 
@@ -231,7 +263,10 @@ export default function IntroAnimation() {
     }, [smoothMorph, smoothScrollRotate, smoothMouseX]);
 
     const contentOpacity = useTransform(smoothMorph, [0.8, 1], [0, 1]);
-    const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
+    
+    // Shift content up dynamically based on device size so it doesn't overlap the arc
+    const textTargetY = isMobileDevice ? -50 : 0;
+    const contentY = useTransform(smoothMorph, [0.8, 1], [20, textTargetY]);
     
     // Combine content opacity with logo reveal fade out
     const finalContentOpacity = useTransform(() => {
@@ -250,7 +285,7 @@ export default function IntroAnimation() {
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="absolute inset-0 z-40 bg-white/60 backdrop-blur-sm cursor-pointer"
+                    className="absolute inset-0 z-40 bg-white/60 backdrop-blur-md cursor-pointer"
                     onClick={() => setSelectedImage(null)}
                 />
             )}
@@ -264,31 +299,31 @@ export default function IntroAnimation() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 1 - morphValue * 2, y: 0 } : { opacity: 0 }}
                         transition={{ duration: 1 }}
-                        className="text-5xl md:text-8xl font-black tracking-tighter text-black uppercase font-mono"
+                        className="text-4xl md:text-8xl font-black tracking-tighter text-black uppercase font-mono"
                         style={{ textShadow: '4px 4px 0px #c0c0c0' }}
                     >
-                        KILIFLAR
+                        SHUFFLE CASE
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 0.5 - morphValue } : { opacity: 0 }}
                         transition={{ duration: 1, delay: 0.2 }}
-                        className="mt-6 text-sm font-bold tracking-[0.4em] text-black uppercase bg-[#c0c0c0] px-4 py-1 border-2 border-black"
+                        className="mt-6 text-xs md:text-sm font-bold tracking-[0.2em] md:tracking-[0.4em] text-black uppercase bg-[#c0c0c0] px-4 py-1 border-2 border-black"
                     >
-                        Aşağı Kaydırın
+                        {isMobileDevice ? "Kaydırarak Keşfet" : "Aşağı Kaydırın"}
                     </motion.p>
                 </div>
 
                 {/* Arc Active Content */}
                 <motion.div
                     style={{ opacity: finalContentOpacity, y: contentY }}
-                    className="absolute top-[12%] z-10 flex flex-col items-center justify-center text-center pointer-events-none px-6 w-full"
+                    className={`absolute z-10 flex flex-col items-center justify-center text-center pointer-events-none px-6 w-full ${isMobileDevice ? 'top-[5%]' : 'top-[12%]'}`}
                 >
-                    <h2 className="text-4xl md:text-7xl font-black tracking-tighter text-black mb-4 font-mono uppercase" style={{ WebkitTextStroke: '1px black', color: 'transparent' }}>
-                        Siradanligi Yik
+                    <h2 className="text-3xl md:text-7xl font-black tracking-tighter text-black mb-2 md:mb-4 font-mono uppercase" style={{ WebkitTextStroke: '1px black', color: 'transparent' }}>
+                        Dokuyu Hisset
                     </h2>
-                    <p className="text-sm md:text-xl text-black max-w-xl font-bold bg-[#c0c0c0] p-2 border-2 border-black inline-block shadow-[4px_4px_0_0_#000]">
-                        Y2K tarzını hisset. Sınırları aş.
+                    <p className="text-xs md:text-xl text-black max-w-xl font-bold bg-[#c0c0c0] p-2 border-2 border-black inline-block shadow-[4px_4px_0_0_#000]">
+                        Gençler için yeni tarz, özel baskılar ve öne çıkan dokular.
                     </p>
                 </motion.div>
 
@@ -299,8 +334,9 @@ export default function IntroAnimation() {
 
                         if (selectedImage !== null) {
                             if (selectedImage === i) {
-                                // Zoomed state
-                                target = { x: 0, y: 0, rotation: 0, scale: 3.5, opacity: 1 };
+                                // Zoomed state (scaled differently on mobile)
+                                const zoomScale = isMobileDevice ? 2.5 : 3.5;
+                                target = { x: 0, y: 0, rotation: 0, scale: zoomScale, opacity: 1 };
                             } else {
                                 // Scatter others out
                                 target = scatterOutPositions[i];
@@ -315,7 +351,6 @@ export default function IntroAnimation() {
                                 const lineX = i * lineSpacing - lineTotalWidth / 2;
                                 target = { x: lineX, y: 0, rotation: 0, scale: 1, opacity: 1 };
                             } else {
-                                const isMobile = containerSize.width < 768;
                                 const minDimension = Math.min(containerSize.width, containerSize.height);
                                 const circleRadius = Math.min(minDimension * 0.35, 350);
                                 const circleAngle = (i / TOTAL_IMAGES) * 360;
@@ -327,10 +362,13 @@ export default function IntroAnimation() {
                                 };
 
                                 const baseRadius = Math.min(containerSize.width, containerSize.height * 1.5);
-                                const arcRadius = baseRadius * (isMobile ? 1.4 : 1.1);
-                                const arcApexY = containerSize.height * (isMobile ? 0.35 : 0.25);
+                                const arcRadius = baseRadius * (isMobileDevice ? 1.6 : 1.1); // Flatter arc on mobile
+                                
+                                // Push the arc center far lower on mobile so it stays at the bottom
+                                const arcApexY = containerSize.height * (isMobileDevice ? 0.45 : 0.25);
                                 const arcCenterY = arcApexY + arcRadius;
-                                const spreadAngle = isMobile ? 100 : 130;
+                                
+                                const spreadAngle = isMobileDevice ? 80 : 130;
                                 const startAngle = -90 - (spreadAngle / 2);
                                 const step = spreadAngle / (TOTAL_IMAGES - 1);
                                 const scrollProgress = Math.min(Math.max(rotateValue / 360, 0), 1);
@@ -342,7 +380,7 @@ export default function IntroAnimation() {
                                     x: Math.cos(arcRad) * arcRadius + parallaxValue,
                                     y: Math.sin(arcRad) * arcRadius + arcCenterY,
                                     rotation: currentArcAngle + 90,
-                                    scale: isMobile ? 1.4 : 1.8,
+                                    scale: isMobileDevice ? 1.2 : 1.8,
                                 };
 
                                 target = {
@@ -387,16 +425,16 @@ export default function IntroAnimation() {
                     className="absolute z-20 flex flex-col items-center justify-center pointer-events-auto"
                 >
                     <Link href="/shop" className="group flex flex-col items-center transition-transform hover:scale-110 active:scale-95">
-                        <div className="w-48 h-48 md:w-64 md:h-64 bg-[#c0c0c0] rounded-full border-4 border-black flex items-center justify-center shadow-[8px_8px_0_0_#000] relative overflow-hidden">
+                        <div className="w-40 h-40 md:w-64 md:h-64 bg-[#c0c0c0] rounded-full border-4 border-black flex items-center justify-center shadow-[8px_8px_0_0_#000] relative overflow-hidden">
                             {/* Star shape for Y2K feel */}
-                            <svg className="w-32 h-32 text-black animate-[spin_10s_linear_infinite]" viewBox="0 0 24 24" fill="currentColor">
+                            <svg className="w-24 h-24 md:w-32 md:h-32 text-black animate-[spin_10s_linear_infinite]" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z" />
                             </svg>
-                            <span className="absolute text-3xl font-black text-white mix-blend-difference uppercase font-mono tracking-tighter">
+                            <span className="absolute text-xl md:text-3xl font-black text-white mix-blend-difference uppercase font-mono tracking-tighter">
                                 ENTER
                             </span>
                         </div>
-                        <div className="mt-8 bg-black text-white px-8 py-3 font-mono font-bold uppercase tracking-widest text-xl group-hover:bg-[#ff0000] transition-colors border-2 border-black">
+                        <div className="mt-8 bg-black text-white px-8 py-3 font-mono font-bold uppercase tracking-widest text-lg md:text-xl group-hover:bg-[#ff0000] transition-colors border-2 border-black">
                             Mağazaya Git
                         </div>
                     </Link>
