@@ -295,15 +295,14 @@ export default function IntroAnimation() {
 
                 {/* Intro Text */}
                 <div className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2 w-full px-6">
-                    <motion.h1
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 1 - morphValue * 2, y: 0 } : { opacity: 0 }}
                         transition={{ duration: 1 }}
-                        className="text-4xl md:text-8xl font-black tracking-tighter text-black uppercase font-mono"
-                        style={{ textShadow: '4px 4px 0px #c0c0c0' }}
+                        className="flex justify-center items-center"
                     >
-                        SHUFFLE CASE
-                    </motion.h1>
+                        <img src="/logo.png" alt="Shuffle Case Logo" className="h-24 md:h-48 object-contain drop-shadow-[4px_4px_0_rgba(192,192,192,1)]" />
+                    </motion.div>
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 0.5 - morphValue } : { opacity: 0 }}
