@@ -65,7 +65,7 @@ function FlipCard({
                     <img
                         src={src}
                         alt={`hero-${index}`}
-                        className={`max-h-full max-w-full object-cover transition-all duration-1000 ${
+                        className={`h-full w-full object-cover transition-all duration-1000 ${
                             isSelected 
                                 ? "filter-none scale-100" 
                                 : "max-md:filter-none md:blur-[1px] md:brightness-90 md:contrast-[1.1] md:group-hover:filter-none md:group-hover:scale-110" 
@@ -292,15 +292,15 @@ export default function IntroAnimation() {
                         } else {
                             // Immediate Arc Logic (No intro phase)
                             const baseRadius = Math.min(containerSize.width, containerSize.height * 1.5);
-                            // Push radius massive on mobile so exactly ~3 fit
-                            const arcRadius = baseRadius * (isMobileDevice ? 2.5 : 1.1); 
+                            // Adjusted radius for better vertical screen coverage (approx 80% view)
+                            const arcRadius = baseRadius * (isMobileDevice ? 1.5 : 1.1); 
                             
-                            // Push arc center down slightly more on mobile for better spacing
-                            const arcApexY = containerSize.height * (isMobileDevice ? 0.45 : 0.25);
+                            // Move apex higher to center the arc more vertically on mobile
+                            const arcApexY = containerSize.height * (isMobileDevice ? 0.35 : 0.25);
                             const arcCenterY = arcApexY + arcRadius;
                             
-                            // Spread items wide on mobile (360) so only a few fit in the screen viewport
-                            const spreadAngle = isMobileDevice ? 360 : 130;
+                            // Spread items wide on mobile so only a few fit in the screen viewport
+                            const spreadAngle = isMobileDevice ? 240 : 130;
                             // Apex is at -90. The first item should start at apex.
                             const startAngle = -90;
                             const step = spreadAngle / (TOTAL_IMAGES - 1);
