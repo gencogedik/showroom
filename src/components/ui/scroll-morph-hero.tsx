@@ -4,13 +4,10 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, useTransform, useSpring, useMotionValue } from "framer-motion";
 import Link from "next/link";
 
-export type AnimationPhase = "scatter" | "line" | "circle" | "bottom-strip";
-
 interface FlipCardProps {
     src: string;
     index: number;
     total: number;
-    phase: AnimationPhase;
     target: { x: number; y: number; rotation: number; scale: number; opacity: number };
     onClick: () => void;
     isSelected: boolean;
@@ -24,7 +21,6 @@ function FlipCard({
     src,
     index,
     total,
-    phase,
     target,
     onClick,
     isSelected,
@@ -60,24 +56,22 @@ function FlipCard({
                 style={{ transformStyle: "preserve-3d" }}
                 transition={{ duration: 0.6, type: "spring", stiffness: 260, damping: 20 }}
                 whileHover={!isAnySelected ? { rotateY: 180 } : undefined}
-                animate={isSelected ? { rotateY: 0 } : undefined} // Force front if selected
+                animate={isSelected ? { rotateY: 0 } : undefined}
             >
                 {/* Front Face */}
                 <div
-                    className="absolute inset-0 h-full w-full overflow-hidden bg-white border-2 border-black shadow-[4px_4px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] transition-shadow duration-300"
+                    className="absolute inset-0 h-full w-full overflow-hidden bg-white border-2 border-black shadow-[4px_4px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] transition-shadow duration-300 flex items-center justify-center p-2"
                     style={{ backfaceVisibility: "hidden" }}
                 >
-                    {/* The Image */}
                     <img
                         src={src}
                         alt={`hero-${index}`}
-                        className={`h-full w-full object-cover transition-all duration-1000 ${
+                        className={`max-h-full max-w-full object-contain transition-all duration-1000 ${
                             isSelected 
-                                ? "filter-none scale-100" // Pure colors when zoomed
+                                ? "filter-none scale-100" 
                                 : "max-md:filter-none md:blur-[1px] md:brightness-90 md:contrast-[1.1] md:group-hover:filter-none md:group-hover:scale-110" 
                         }`}
                     />
-                    {/* Optional grain overlay for desktop only (CSS noise) */}
                     {!isSelected && (
                         <div className="absolute inset-0 opacity-20 md:opacity-40 pointer-events-none hidden md:block" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
                     )}
@@ -102,10 +96,8 @@ function FlipCard({
 const TOTAL_IMAGES = 20;
 const MAX_SCROLL = 3000;
 const IMAGES = Array.from({ length: 20 }, (_, i) => `/images/${i + 1}.jpg`);
-const lerp = (start: number, end: number, t: number) => start * (1 - t) + end * t;
 
 export default function IntroAnimation() {
-    const [introPhase, setIntroPhase] = useState<AnimationPhase>("scatter");
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -139,14 +131,13 @@ export default function IntroAnimation() {
         if (!container) return;
 
         const handleWheel = (e: WheelEvent) => {
-            if (selectedImage !== null) return; // Disable scroll when zoomed
+            if (selectedImage !== null) return; 
             e.preventDefault();
             const newScroll = Math.min(Math.max(scrollRef.current + e.deltaY, 0), MAX_SCROLL);
             scrollRef.current = newScroll;
             virtualScroll.set(newScroll);
         };
 
-        // Touch interactions
         let touchStartX = 0;
         let touchStartY = 0;
         let lastScroll = 0;
@@ -161,20 +152,15 @@ export default function IntroAnimation() {
             if (selectedImage !== null) return;
             const touchX = e.touches[0].clientX;
             const touchY = e.touches[0].clientY;
-            
-            // On mobile, horizontal swipe spins the wheel
-            // Fallback to vertical swipe just in case
             const deltaX = touchStartX - touchX;
             const deltaY = touchStartY - touchY;
             
-            // Use whichever delta is larger to drive the scroll, but horizontal is preferred for the wheel feel.
             const primaryDelta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
             
-            const newScroll = Math.min(Math.max(lastScroll + primaryDelta * 3, 0), MAX_SCROLL); // multiplier for speed
+            const newScroll = Math.min(Math.max(lastScroll + primaryDelta * 3, 0), MAX_SCROLL);
             scrollRef.current = newScroll;
             virtualScroll.set(newScroll);
             
-            // Prevent default scrolling only if we are interacting with the wheel significantly
             if (Math.abs(primaryDelta) > 5) {
                 e.preventDefault();
             }
@@ -191,9 +177,7 @@ export default function IntroAnimation() {
         };
     }, [virtualScroll, selectedImage]);
 
-    const morphProgress = useTransform(virtualScroll, [0, 600], [0, 1]);
-    const smoothMorph = useSpring(morphProgress, { stiffness: 40, damping: 20 });
-    const scrollRotate = useTransform(virtualScroll, [600, 2600], [0, 360]); // End rotation earlier to leave room for logo
+    const scrollRotate = useTransform(virtualScroll, [0, 2000], [0, 360]); 
     const smoothScrollRotate = useSpring(scrollRotate, { stiffness: 40, damping: 20 });
     
     // Logo Reveal Logic
@@ -201,7 +185,7 @@ export default function IntroAnimation() {
     const logoScale = useTransform(virtualScroll, [2600, 2900], [0.5, 1]);
     const logoY = useTransform(virtualScroll, [2600, 2900], [50, 0]);
     // Fade out text when logo appears
-    const introTextOpacity = useTransform(virtualScroll, [2500, 2700], [1, 0]);
+    const introTextOpacity = useTransform(virtualScroll, [2000, 2500], [1, 0]);
 
     const mouseX = useMotionValue(0);
     const smoothMouseX = useSpring(mouseX, { stiffness: 30, damping: 20 });
@@ -219,24 +203,6 @@ export default function IntroAnimation() {
         return () => container.removeEventListener("mousemove", handleMouseMove);
     }, [mouseX]);
 
-    useEffect(() => {
-        // Fast forward intro on mobile
-        const isMobile = window.innerWidth < 768;
-        const timer1 = setTimeout(() => setIntroPhase("line"), isMobile ? 100 : 500);
-        const timer2 = setTimeout(() => setIntroPhase("circle"), isMobile ? 300 : 2500);
-        return () => { clearTimeout(timer1); clearTimeout(timer2); };
-    }, []);
-
-    const scatterPositions = useMemo(() => {
-        return IMAGES.map(() => ({
-            x: (Math.random() - 0.5) * 1500,
-            y: (Math.random() - 0.5) * 1000,
-            rotation: (Math.random() - 0.5) * 180,
-            scale: 0.6,
-            opacity: 0,
-        }));
-    }, []);
-
     const scatterOutPositions = useMemo(() => {
         return IMAGES.map(() => ({
             x: (Math.random() - 0.5) * 4000,
@@ -247,31 +213,17 @@ export default function IntroAnimation() {
         }));
     }, []);
 
-    const [morphValue, setMorphValue] = useState(0);
     const [rotateValue, setRotateValue] = useState(0);
     const [parallaxValue, setParallaxValue] = useState(0);
 
     useEffect(() => {
-        const unsubscribeMorph = smoothMorph.on("change", setMorphValue);
         const unsubscribeRotate = smoothScrollRotate.on("change", setRotateValue);
         const unsubscribeParallax = smoothMouseX.on("change", setParallaxValue);
         return () => {
-            unsubscribeMorph();
             unsubscribeRotate();
             unsubscribeParallax();
         };
-    }, [smoothMorph, smoothScrollRotate, smoothMouseX]);
-
-    const contentOpacity = useTransform(smoothMorph, [0.8, 1], [0, 1]);
-    
-    // Shift content up dynamically based on device size so it doesn't overlap the arc
-    const textTargetY = isMobileDevice ? -50 : 0;
-    const contentY = useTransform(smoothMorph, [0.8, 1], [20, textTargetY]);
-    
-    // Combine content opacity with logo reveal fade out
-    const finalContentOpacity = useTransform(() => {
-        return contentOpacity.get() * introTextOpacity.get();
-    });
+    }, [smoothScrollRotate, smoothMouseX]);
 
     const handleImageClick = (index: number) => {
         setSelectedImage(prev => prev === index ? null : index);
@@ -290,34 +242,30 @@ export default function IntroAnimation() {
                 />
             )}
 
+            {/* Vertical Scroll Indicators */}
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20 pointer-events-none hidden md:block">
+                <p className="text-black font-black font-mono tracking-[0.5em] text-xs" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+                    AŞAĞI KAYDIRIN
+                </p>
+            </div>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20 pointer-events-none hidden md:block">
+                <p className="text-black font-black font-mono tracking-[0.5em] text-xs" style={{ writingMode: 'vertical-rl' }}>
+                    AŞAĞI KAYDIRIN
+                </p>
+            </div>
+
             {/* Container */}
             <div className="flex h-full w-full flex-col items-center justify-center perspective-1000">
 
-                {/* Intro Text */}
-                <div className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2 w-full px-6">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 1 - morphValue * 2, y: 0 } : { opacity: 0 }}
-                        transition={{ duration: 1 }}
-                        className="flex justify-center items-center"
-                    >
-                        <img src="/logo.png" alt="Shuffle Case Logo" className="h-24 md:h-48 object-contain drop-shadow-[4px_4px_0_rgba(192,192,192,1)]" />
-                    </motion.div>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 0.5 - morphValue } : { opacity: 0 }}
-                        transition={{ duration: 1, delay: 0.2 }}
-                        className="mt-6 text-xs md:text-sm font-bold tracking-[0.2em] md:tracking-[0.4em] text-black uppercase bg-[#c0c0c0] px-4 py-1 border-2 border-black"
-                    >
-                        {isMobileDevice ? "Kaydırarak Keşfet" : "Aşağı Kaydırın"}
-                    </motion.p>
-                </div>
-
-                {/* Arc Active Content */}
+                {/* Intro Text (Fades out when scrolling down) */}
                 <motion.div
-                    style={{ opacity: finalContentOpacity, y: contentY }}
-                    className={`absolute z-10 flex flex-col items-center justify-center text-center pointer-events-none px-6 w-full ${isMobileDevice ? 'top-[5%]' : 'top-[12%]'}`}
+                    style={{ opacity: introTextOpacity }}
+                    className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2 w-full px-6"
                 >
+                    <div className="flex justify-center items-center mb-6">
+                        <img src="/logo.png" alt="Shuffle Case Logo" className="h-24 md:h-48 object-contain drop-shadow-[4px_4px_0_rgba(192,192,192,1)] invert" />
+                    </div>
+                    
                     <h2 className="text-3xl md:text-7xl font-black tracking-tighter text-black mb-2 md:mb-4 font-mono uppercase" style={{ WebkitTextStroke: '1px black', color: 'transparent' }}>
                         Dokuyu Hisset
                     </h2>
@@ -327,13 +275,13 @@ export default function IntroAnimation() {
                 </motion.div>
 
                 {/* Main Container */}
-                <div className="relative flex items-center justify-center w-full h-full">
+                <div className="relative flex items-center justify-center w-full h-full mt-32 md:mt-0">
                     {IMAGES.slice(0, TOTAL_IMAGES).map((src, i) => {
                         let target = { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1 };
 
                         if (selectedImage !== null) {
                             if (selectedImage === i) {
-                                // Zoomed state (scaled differently on mobile)
+                                // Zoomed state
                                 const zoomScale = isMobileDevice ? 2.5 : 3.5;
                                 target = { x: 0, y: 0, rotation: 0, scale: zoomScale, opacity: 1 };
                             } else {
@@ -341,64 +289,49 @@ export default function IntroAnimation() {
                                 target = scatterOutPositions[i];
                             }
                         } else {
-                            // Normal Scroll Logic
-                            if (introPhase === "scatter") {
-                                target = scatterPositions[i];
-                            } else if (introPhase === "line") {
-                                const lineSpacing = 70;
-                                const lineTotalWidth = TOTAL_IMAGES * lineSpacing;
-                                const lineX = i * lineSpacing - lineTotalWidth / 2;
-                                target = { x: lineX, y: 0, rotation: 0, scale: 1, opacity: 1 };
-                            } else {
-                                const minDimension = Math.min(containerSize.width, containerSize.height);
-                                const circleRadius = Math.min(minDimension * 0.35, 350);
-                                const circleAngle = (i / TOTAL_IMAGES) * 360;
-                                const circleRad = (circleAngle * Math.PI) / 180;
-                                const circlePos = {
-                                    x: Math.cos(circleRad) * circleRadius,
-                                    y: Math.sin(circleRad) * circleRadius,
-                                    rotation: circleAngle + 90,
-                                };
+                            // Immediate Arc Logic (No intro phase)
+                            const baseRadius = Math.min(containerSize.width, containerSize.height * 1.5);
+                            const arcRadius = baseRadius * (isMobileDevice ? 1.4 : 1.1); 
+                            
+                            const arcApexY = containerSize.height * (isMobileDevice ? 0.40 : 0.25);
+                            const arcCenterY = arcApexY + arcRadius;
+                            
+                            const spreadAngle = isMobileDevice ? 80 : 130;
+                            const startAngle = -90 - (spreadAngle / 2);
+                            const step = spreadAngle / (TOTAL_IMAGES - 1);
+                            
+                            // Make it wrap around like a full wheel
+                            const maxRotation = spreadAngle * 0.8;
+                            const scrollProgress = (rotateValue % 360) / 360; 
+                            const boundedRotation = -scrollProgress * 360; 
+                            
+                            let currentArcAngle = startAngle + (i * step) + boundedRotation;
+                            
+                            // Ensure continuous loop visual if needed, but for now just standard arc
+                            const arcRad = (currentArcAngle * Math.PI) / 180;
+                            const arcPos = {
+                                x: Math.cos(arcRad) * arcRadius + parallaxValue,
+                                y: Math.sin(arcRad) * arcRadius + arcCenterY,
+                                rotation: currentArcAngle + 90,
+                                scale: isMobileDevice ? 1.2 : 1.8,
+                            };
 
-                                const baseRadius = Math.min(containerSize.width, containerSize.height * 1.5);
-                                const arcRadius = baseRadius * (isMobileDevice ? 1.6 : 1.1); // Flatter arc on mobile
-                                
-                                // Push the arc center far lower on mobile so it stays at the bottom
-                                const arcApexY = containerSize.height * (isMobileDevice ? 0.45 : 0.25);
-                                const arcCenterY = arcApexY + arcRadius;
-                                
-                                const spreadAngle = isMobileDevice ? 80 : 130;
-                                const startAngle = -90 - (spreadAngle / 2);
-                                const step = spreadAngle / (TOTAL_IMAGES - 1);
-                                const scrollProgress = Math.min(Math.max(rotateValue / 360, 0), 1);
-                                const maxRotation = spreadAngle * 0.8;
-                                const boundedRotation = -scrollProgress * maxRotation;
-                                const currentArcAngle = startAngle + (i * step) + boundedRotation;
-                                const arcRad = (currentArcAngle * Math.PI) / 180;
-                                const arcPos = {
-                                    x: Math.cos(arcRad) * arcRadius + parallaxValue,
-                                    y: Math.sin(arcRad) * arcRadius + arcCenterY,
-                                    rotation: currentArcAngle + 90,
-                                    scale: isMobileDevice ? 1.2 : 1.8,
-                                };
-
-                                target = {
-                                    x: lerp(circlePos.x, arcPos.x, morphValue),
-                                    y: lerp(circlePos.y, arcPos.y, morphValue),
-                                    rotation: lerp(circlePos.rotation, arcPos.rotation, morphValue),
-                                    scale: lerp(1, arcPos.scale, morphValue),
-                                    opacity: 1,
-                                };
-                            }
+                            target = {
+                                x: arcPos.x,
+                                y: arcPos.y,
+                                rotation: arcPos.rotation,
+                                scale: arcPos.scale,
+                                opacity: 1,
+                            };
                         }
 
-                        // Fade out images slightly when logo appears, unless selected
+                        // Fade out images slightly when logo appears
                         if (selectedImage === null) {
                             const currentScroll = virtualScroll.get();
                             if (currentScroll > 2600) {
-                                const fadeProgress = (currentScroll - 2600) / 300; // 0 to 1
+                                const fadeProgress = (currentScroll - 2600) / 300; 
                                 target.opacity = Math.max(0, 1 - fadeProgress);
-                                target.scale = target.scale * (1 - fadeProgress * 0.5); // Shrink slightly
+                                target.scale = target.scale * (1 - fadeProgress * 0.5); 
                             }
                         }
 
@@ -408,7 +341,6 @@ export default function IntroAnimation() {
                                 src={src}
                                 index={i}
                                 total={TOTAL_IMAGES}
-                                phase={introPhase}
                                 target={target}
                                 onClick={() => handleImageClick(i)}
                                 isSelected={selectedImage === i}
@@ -425,7 +357,6 @@ export default function IntroAnimation() {
                 >
                     <Link href="/shop" className="group flex flex-col items-center transition-transform hover:scale-110 active:scale-95">
                         <div className="w-40 h-40 md:w-64 md:h-64 bg-[#c0c0c0] rounded-full border-4 border-black flex items-center justify-center shadow-[8px_8px_0_0_#000] relative overflow-hidden">
-                            {/* Star shape for Y2K feel */}
                             <svg className="w-24 h-24 md:w-32 md:h-32 text-black animate-[spin_10s_linear_infinite]" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z" />
                             </svg>
