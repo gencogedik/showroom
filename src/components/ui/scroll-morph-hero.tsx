@@ -156,8 +156,8 @@ export default function IntroAnimation() {
             
             const primaryDelta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
             
-            // Slow down the touch scroll drastically for a heavy wheel feel
-            const newScroll = Math.min(Math.max(lastScroll + primaryDelta * 0.8, 0), MAX_SCROLL);
+            // Adjust the touch scroll speed to be responsive but not overly sensitive
+            const newScroll = Math.min(Math.max(lastScroll + primaryDelta * 1.5, 0), MAX_SCROLL);
             scrollRef.current = newScroll;
             virtualScroll.set(newScroll);
             
