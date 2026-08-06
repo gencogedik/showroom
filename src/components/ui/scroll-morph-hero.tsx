@@ -66,7 +66,7 @@ function FlipCard({
                     <img
                         src={src}
                         alt={`hero-${index}`}
-                        className={`max-h-full max-w-full object-contain transition-all duration-1000 ${
+                        className={`max-h-full max-w-full object-cover transition-all duration-1000 ${
                             isSelected 
                                 ? "filter-none scale-100" 
                                 : "max-md:filter-none md:blur-[1px] md:brightness-90 md:contrast-[1.1] md:group-hover:filter-none md:group-hover:scale-110" 
@@ -157,7 +157,8 @@ export default function IntroAnimation() {
             
             const primaryDelta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
             
-            const newScroll = Math.min(Math.max(lastScroll + primaryDelta * 3, 0), MAX_SCROLL);
+            // Slow down the touch scroll drastically for a heavy wheel feel
+            const newScroll = Math.min(Math.max(lastScroll + primaryDelta * 0.8, 0), MAX_SCROLL);
             scrollRef.current = newScroll;
             virtualScroll.set(newScroll);
             
@@ -293,27 +294,26 @@ export default function IntroAnimation() {
                             const baseRadius = Math.min(containerSize.width, containerSize.height * 1.5);
                             const arcRadius = baseRadius * (isMobileDevice ? 1.4 : 1.1); 
                             
-                            const arcApexY = containerSize.height * (isMobileDevice ? 0.40 : 0.25);
+                            // Push arc center down slightly more on mobile for better spacing
+                            const arcApexY = containerSize.height * (isMobileDevice ? 0.45 : 0.25);
                             const arcCenterY = arcApexY + arcRadius;
                             
                             const spreadAngle = isMobileDevice ? 80 : 130;
                             const startAngle = -90 - (spreadAngle / 2);
                             const step = spreadAngle / (TOTAL_IMAGES - 1);
                             
-                            // Make it wrap around like a full wheel
-                            const maxRotation = spreadAngle * 0.8;
-                            const scrollProgress = (rotateValue % 360) / 360; 
-                            const boundedRotation = -scrollProgress * 360; 
+                            // Use pure unbounded rotation to prevent popping/snapping at 360 boundaries
+                            const boundedRotation = -rotateValue; 
                             
                             let currentArcAngle = startAngle + (i * step) + boundedRotation;
                             
-                            // Ensure continuous loop visual if needed, but for now just standard arc
                             const arcRad = (currentArcAngle * Math.PI) / 180;
                             const arcPos = {
                                 x: Math.cos(arcRad) * arcRadius + parallaxValue,
                                 y: Math.sin(arcRad) * arcRadius + arcCenterY,
                                 rotation: currentArcAngle + 90,
-                                scale: isMobileDevice ? 1.2 : 1.8,
+                                // Massive scale on mobile so they appear huge and clear
+                                scale: isMobileDevice ? 2.5 : 1.8,
                             };
 
                             target = {
