@@ -20,8 +20,8 @@ interface FlipCardProps {
 }
 
 // --- FlipCard Component ---
-const IMG_WIDTH = 60;  // Reduced from 100
-const IMG_HEIGHT = 85; // Reduced from 140
+const IMG_WIDTH = 110;  // Increased for premium look
+const IMG_HEIGHT = 160; 
 
 function FlipCard({
     src,
@@ -64,25 +64,26 @@ function FlipCard({
             >
                 {/* Front Face */}
                 <div
-                    className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-gray-200"
+                    className="absolute inset-0 h-full w-full overflow-hidden rounded-2xl shadow-2xl bg-black border border-white/10"
                     style={{ backfaceVisibility: "hidden" }}
                 >
                     <img
                         src={src}
                         alt={`hero-${index}`}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-50 group-hover:opacity-20 transition-opacity" />
                 </div>
 
                 {/* Back Face */}
                 <div
-                    className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-gray-900 flex flex-col items-center justify-center p-4 border border-gray-700"
+                    className="absolute inset-0 h-full w-full overflow-hidden rounded-2xl shadow-2xl bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-4 border border-white/20"
                     style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
                 >
                     <div className="text-center">
-                        <p className="text-[8px] font-bold text-blue-400 uppercase tracking-widest mb-1">View</p>
-                        <p className="text-xs font-medium text-white">Details</p>
+                        <p className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 uppercase tracking-[0.3em] mb-2">Keşfet</p>
+                        <div className="w-6 h-[1px] bg-white/30 mx-auto mb-2" />
+                        <p className="text-sm font-medium text-white tracking-widest">İncele</p>
                     </div>
                 </div>
             </motion.div>
@@ -245,41 +246,47 @@ export default function IntroAnimation() {
     const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
 
     return (
-        <div ref={containerRef} className="relative w-full h-full bg-[#FAFAFA] overflow-hidden">
+        <div ref={containerRef} className="relative w-full h-full bg-[#050505] overflow-hidden">
+            {/* Ambient Background Glow */}
+            <motion.div 
+                style={{ x: smoothMouseX, y: parallaxValue }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none" 
+            />
+
             {/* Container */}
             <div className="flex h-full w-full flex-col items-center justify-center perspective-1000">
 
                 {/* Intro Text (Fades out) */}
-                <div className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2">
+                <div className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2 w-full px-6">
                     <motion.h1
                         initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
                         animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 1 - morphValue * 2, y: 0, filter: "blur(0px)" } : { opacity: 0, filter: "blur(10px)" }}
                         transition={{ duration: 1 }}
-                        className="text-2xl font-medium tracking-tight text-gray-800 md:text-4xl"
+                        className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40"
                     >
-                        The future is built on AI.
+                        Sanat Parmaklarınızın <br/><span className="italic font-serif font-light text-purple-400">Ucunda</span>
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 0.5 - morphValue } : { opacity: 0 }}
                         transition={{ duration: 1, delay: 0.2 }}
-                        className="mt-4 text-xs font-bold tracking-[0.2em] text-gray-500"
+                        className="mt-8 text-xs md:text-sm font-semibold tracking-[0.3em] text-gray-400 uppercase"
                     >
-                        SCROLL TO EXPLORE
+                        Aşağı Kaydırın
                     </motion.p>
                 </div>
 
                 {/* Arc Active Content (Fades in) */}
                 <motion.div
                     style={{ opacity: contentOpacity, y: contentY }}
-                    className="absolute top-[10%] z-10 flex flex-col items-center justify-center text-center pointer-events-none px-4"
+                    className="absolute top-[12%] z-10 flex flex-col items-center justify-center text-center pointer-events-none px-6 w-full"
                 >
-                    <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 tracking-tight mb-4">
-                        Kılıf modellerimizi inceleyin
+                    <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white mb-6">
+                        Sıradanlığı <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-600 italic font-serif">Kırın</span>
                     </h2>
-                    <p className="text-sm md:text-base text-gray-600 max-w-lg leading-relaxed">
-                        Tasarım ve korumanın buluştuğu eşsiz koleksiyon. <br className="hidden md:block" />
-                        Sizin için özenle seçilmiş ürünlerimize göz atın.
+                    <p className="text-sm md:text-lg text-gray-400 max-w-xl leading-relaxed font-light">
+                        Cihazınızı korurken tarzınızı sanatla buluşturun. <br className="hidden md:block" />
+                        Her bir dokunuşta sınırları yeniden çizin ve fark yaratın.
                     </p>
                 </motion.div>
 
