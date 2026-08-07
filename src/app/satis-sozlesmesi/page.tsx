@@ -22,10 +22,10 @@ export default function SalesAgreementPage() {
                         <h3>MADDE 1 - TARAFLAR</h3>
                         <p><strong>SATICI:</strong></p>
                         <ul className="list-disc pl-5 font-bold mb-4">
-                            <li>Unvanı: [FİRMA UNVANI YAZINIZ]</li>
-                            <li>Adresi: [FİRMA ADRESİ YAZINIZ]</li>
-                            <li>Telefon: [FİRMA TELEFONU YAZINIZ]</li>
-                            <li>Email: [FİRMA EMAIL YAZINIZ]</li>
+                            <li>Unvanı: Shuffle Case</li>
+                            <li>Adresi: Elmalıkent, Adem Yavuz Cd. No: 17 B, 34764 Ümraniye / İstanbul</li>
+                            <li>Telefon: +90 541 192 52 06</li>
+                            <li>Email: shufflekap@gmail.com</li>
                         </ul>
                         
                         <p><strong>ALICI (TÜKETİCİ):</strong></p>

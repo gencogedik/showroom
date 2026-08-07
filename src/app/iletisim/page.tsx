@@ -22,29 +22,29 @@ export default function ContactPage() {
                         <section>
                             <h2 className="font-black text-xl mb-2 text-red-500">FİRMA ÜNVANI</h2>
                             <p className="font-bold border-l-4 border-black pl-4">
-                                [FİRMA UNVANI / AD SOYAD YAZINIZ]
+                                Shuffle Case
                             </p>
                         </section>
 
                         <section>
                             <h2 className="font-black text-xl mb-2 text-red-500">ADRES</h2>
                             <p className="font-bold border-l-4 border-black pl-4 whitespace-pre-line">
-                                [TAM AÇIK ADRESİNİZİ YAZINIZ]
-                                [İLÇE] / [İL]
+                                Elmalıkent, Adem Yavuz Cd. No: 17 B
+                                34764 Ümraniye / İstanbul
                             </p>
                         </section>
 
                         <section>
                             <h2 className="font-black text-xl mb-2 text-red-500">MÜŞTERİ HİZMETLERİ TELEFONU</h2>
                             <p className="font-bold border-l-4 border-black pl-4">
-                                [TELEFON NUMARANIZI YAZINIZ]
+                                +90 541 192 52 06
                             </p>
                         </section>
 
                         <section>
                             <h2 className="font-black text-xl mb-2 text-red-500">E-POSTA ADRESİ</h2>
                             <p className="font-bold border-l-4 border-black pl-4">
-                                [E-POSTA ADRESİNİZİ YAZINIZ]
+                                shufflekap@gmail.com
                             </p>
                         </section>
                     </div>

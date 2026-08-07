@@ -31,7 +31,7 @@ export default function ReturnPolicyPage() {
 
                         <h2>İade Prosedürü</h2>
                         <ul className="list-disc pl-5 font-bold mb-4">
-                            <li>İade talebinizi sipariş numaranız ile birlikte <strong>[E-POSTA ADRESİNİZ]</strong> adresine iletiniz.</li>
+                            <li>İade talebinizi sipariş numaranız ile birlikte <strong>shufflekap@gmail.com</strong> adresine iletiniz.</li>
                             <li>Tarafınıza verilecek kargo iade kodu ile ürünü faturasıyla birlikte anlaşmalı kargomuza teslim ediniz.</li>
                             <li>Ürün tarafımıza ulaşıp incelendikten sonra, iade koşullarına uygunsa 3 ila 7 iş günü içerisinde ödeme yaptığınız kredi/banka kartınıza tutar iade edilir.</li>
                         </ul>

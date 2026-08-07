@@ -25,12 +25,12 @@ export default function ShippingPage() {
                         
                         <h2>Kargo Ücretleri ve Anlaşmalı Firmalar</h2>
                         <p>
-                            Gönderilerimiz <strong>[KARGO FİRMASI ADI YAZINIZ]</strong> aracılığı ile yapılmaktadır. Kargo ücreti alıcıya aittir ve sipariş esnasında toplam tutara yansıtılır veya kapıda ödenir. (Kampanya dönemlerinde kargo ücretsiz olabilir).
+                            Gönderilerimiz <strong>PTT Kargo</strong> aracılığı ile yapılmaktadır. Kargo ücreti alıcıya aittir ve sipariş esnasında toplam tutara yansıtılır veya kapıda ödenir. (Kampanya dönemlerinde kargo ücretsiz olabilir).
                         </p>
 
                         <h2>Teslimat Süresi</h2>
                         <p>
-                            Stokta bulunan ürünler iş günleri (Pazartesi - Cuma) içerisinde <strong>[X] iş günü</strong> içerisinde kargoya teslim edilmektedir. Özel sipariş veya üretim gerektiren ürünlerde bu süre ürün detay sayfasında ayrıca belirtilir.
+                            Stokta bulunan ürünler iş günleri (Pazartesi - Cuma) içerisinde <strong>1-3 iş günü</strong> içerisinde kargoya teslim edilmektedir. Özel sipariş veya üretim gerektiren ürünlerde bu süre ürün detay sayfasında ayrıca belirtilir.
                         </p>
 
                         <h2>Kargo Teslim Alınırken Dikkat Edilmesi Gerekenler</h2>
