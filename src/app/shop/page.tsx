@@ -1,27 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "@/components/ui/product-card";
+import { useCartStore } from "@/store/cartStore";
 
 const TOTAL_PRODUCTS = 20;
 const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => ({
-    id: i + 1,
+    id: `TEXTURE-CASE-${(i + 1).toString().padStart(2, '0')}`,
     title: `TEXTURE CASE #${(i + 1).toString().padStart(2, '0')}`,
-    price: "₺399.00",
+    price: 399,
     imageSrc: `/images/${i + 1}.jpg`
 }));
 
 export default function ShopPage() {
-    const [cartCount, setCartCount] = useState(0);
+    const addItem = useCartStore((state) => state.addItem);
+    const cartCount = useCartStore((state) => state.getTotalItems());
+    const [isClient, setIsClient] = useState(false);
     const [lastAdded, setLastAdded] = useState<string | null>(null);
 
-    const handleAddToCart = (title: string) => {
-        setCartCount(prev => prev + 1);
-        setLastAdded(title);
+    // Hydration fix for zustand persist
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    const handleAddToCart = (product: typeof PRODUCTS[0]) => {
+        addItem({
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            imageSrc: product.imageSrc
+        });
+        setLastAdded(product.title);
         
-        // Hide toast after 3 seconds
         setTimeout(() => {
             setLastAdded(null);
         }, 3000);
@@ -46,10 +58,12 @@ export default function ShopPage() {
                     <Link href="/" className="hidden md:block font-bold uppercase tracking-widest text-sm hover:underline underline-offset-4 decoration-2">
                         Geri Dön
                     </Link>
-                    <button className="bg-black text-white px-4 py-2 border-2 border-black font-bold flex items-center gap-2 hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0_0_#ff0000] active:translate-y-1 active:translate-x-1 active:shadow-none">
-                        <span>SEPET</span>
-                        <span className="bg-white text-black px-2 py-0.5 rounded-full text-xs">{cartCount}</span>
-                    </button>
+                    <Link href="/checkout">
+                        <button className="bg-black text-white px-4 py-2 border-2 border-black font-bold flex items-center gap-2 hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0_0_#ff0000] active:translate-y-1 active:translate-x-1 active:shadow-none">
+                            <span>SEPET</span>
+                            <span className="bg-white text-black px-2 py-0.5 rounded-full text-xs">{isClient ? cartCount : 0}</span>
+                        </button>
+                    </Link>
                 </div>
             </header>
 
@@ -81,14 +95,14 @@ export default function ShopPage() {
 
                 {/* Product Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {PRODUCTS.map((product) => (
+                    {PRODUCTS.map((product, index) => (
                         <ProductCard
                             key={product.id}
-                            id={product.id}
+                            id={index + 1}
                             title={product.title}
-                            price={product.price}
+                            price={`₺${product.price.toFixed(2)}`}
                             imageSrc={product.imageSrc}
-                            onAddToCart={() => handleAddToCart(product.title)}
+                            onAddToCart={() => handleAddToCart(product)}
                         />
                     ))}
                 </div>
