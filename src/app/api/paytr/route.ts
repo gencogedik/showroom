@@ -19,8 +19,14 @@ export async function POST(req: Request) {
         const user_address = body.user.address + " " + body.user.city;
         const user_phone = body.user.phone;
         const user_ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-        const merchant_ok_url = "http://localhost:3000/shop"; // Başarılı dönüş URL
-        const merchant_fail_url = "http://localhost:3000/checkout"; // Hata dönüş URL
+        
+        // Dinamik URL Tespiti (Vercel veya Localhost için otomatik ayarlar)
+        const protocol = req.headers.get("x-forwarded-proto") || "http";
+        const host = req.headers.get("host") || "localhost:3000";
+        const baseUrl = `${protocol}://${host}`;
+
+        const merchant_ok_url = `${baseUrl}/shop`; // Başarılı dönüş URL
+        const merchant_fail_url = `${baseUrl}/checkout`; // Hata dönüş URL
         
         // Sepetteki ürünleri PayTR'nin istediği formata dönüştür
         // Her ürün için: [ "Ürün Adı", "Fiyat", "Adet" ]
@@ -28,7 +34,7 @@ export async function POST(req: Request) {
         const user_basket_encoded = Buffer.from(JSON.stringify(user_basket)).toString("base64");
         
         // Güvenlik Hash (Token) Oluşturma
-        const hash_str = merchant_id + user_ip + merchant_oid + email + payment_amount + user_basket_encoded + "0" + "0" + "0" + "0";
+        const hash_str = merchant_id + user_ip + merchant_oid + email + payment_amount + user_basket_encoded + "0" + "0" + "TL" + "1";
         const paytr_token = hash_str + merchant_salt;
         const token = crypto.createHmac("sha256", merchant_key).update(paytr_token).digest("base64");
 
