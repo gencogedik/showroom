@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
+import { Footer } from "@/components/ui/footer";
 
 export default function CheckoutPage() {
     const router = useRouter();
@@ -158,6 +159,10 @@ export default function CheckoutPage() {
                     </button>
                 </div>
             </main>
+            
+            <div className="mt-24">
+                <Footer />
+            </div>
         </div>
     );
 }

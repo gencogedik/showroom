@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "@/components/ui/product-card";
+import { Footer } from "@/components/ui/footer";
 import { useCartStore } from "@/store/cartStore";
 
 const TOTAL_PRODUCTS = 20;
@@ -123,6 +124,8 @@ export default function ShopPage() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            
+            <Footer />
         </div>
     );
 }
