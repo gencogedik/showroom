@@ -32,20 +32,7 @@ export async function POST(req: Request) {
         const paytr_token = hash_str + merchant_salt;
         const token = crypto.createHmac("sha256", merchant_key).update(paytr_token).digest("base64");
 
-        // --- TEST MODU MOCK CEVAP ---
-        // Eğer gerçek API key yoksa, sistemi test etmek için sahte (mock) bir token dönüyoruz.
-        if (merchant_id === "TEST_MERCHANT_ID") {
-            // Simulated delay
-            await new Promise(r => setTimeout(r, 1500));
-            return NextResponse.json({
-                status: "success",
-                token: "MOCK_PAYTR_TOKEN_" + merchant_oid,
-                message: "Test modunda sahte token oluşturuldu."
-            });
-        }
-
         // --- GERÇEK PAYTR İSTEĞİ ---
-        /*
         const paytrParams = new URLSearchParams();
         paytrParams.append('merchant_id', merchant_id);
         paytrParams.append('user_ip', user_ip);
@@ -64,7 +51,7 @@ export async function POST(req: Request) {
         paytrParams.append('merchant_fail_url', merchant_fail_url);
         paytrParams.append('timeout_limit', '30');
         paytrParams.append('currency', 'TL');
-        paytrParams.append('test_mode', '1');
+        paytrParams.append('test_mode', '1'); // Test mode is ON initially for safety. Change to '0' to go live.
 
         const paytrResponse = await fetch("https://www.paytr.com/odeme/api/get-token", {
             method: "POST",
@@ -76,13 +63,6 @@ export async function POST(req: Request) {
 
         const result = await paytrResponse.json();
         return NextResponse.json(result);
-        */
-        
-        // Fallback for when keys are provided but request logic is commented above
-        return NextResponse.json({
-            status: "error",
-            reason: "Gerçek PayTR isteği API dosyasında yorum satırında bekliyor. Aktif etmek için api/paytr/route.ts içindeki yorumu kaldırın."
-        });
 
     } catch (error: any) {
         console.error("PayTR Error:", error);
