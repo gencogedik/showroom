@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { redis } from "@/lib/redis";
 
 export async function POST(req: Request) {
     try {
@@ -25,8 +26,63 @@ export async function POST(req: Request) {
 
         if (status === "success") {
             // Payment successful
-            // You can update your database here to mark the order as "Paid"
             console.log(`Order ${merchant_oid} SUCCESSFUL! Amount: ${total_amount}`);
+
+            // 1. Fetch order details from Redis
+            const orderStr = await redis.get(`order:${merchant_oid}`);
+            if (orderStr) {
+                const order = JSON.parse(orderStr);
+                
+                // 2. Prepare Kargonomi shipment payload
+                const packages = order.items.map((item: any) => ({
+                    content: `${item.quantity}x ${item.title}`,
+                    desi: "1"
+                }));
+
+                const kargonomiPayload = {
+                    order_code: merchant_oid,
+                    type: "DELIVERY",
+                    delivery_type: "address",
+                    buyer_name: order.buyer_name,
+                    buyer_phone: order.buyer_phone,
+                    buyer_address: order.buyer_address,
+                    buyer_state_id: order.buyer_state_id,
+                    buyer_city_id: order.buyer_city_id,
+                    payment_type: "0", // 0: Normal (Kredi Kartı ile ödenmiş, tahsilatsız kargo)
+                    packages: packages
+                };
+
+                // 3. Send to Kargonomi API
+                const kargonomiToken = process.env.KARGONOMI_BEARER_TOKEN;
+                const kargonomiAppKey = process.env.KARGONOMI_APP_KEY;
+
+                if (kargonomiToken && kargonomiAppKey) {
+                    try {
+                        const kargonomiRes = await fetch("https://app.kargonomi.com.tr/api/v1/shipments", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${kargonomiToken}`,
+                                'X-App-Key': kargonomiAppKey
+                            },
+                            body: JSON.stringify(kargonomiPayload)
+                        });
+
+                        const kargonomiData = await kargonomiRes.json();
+                        if (kargonomiRes.ok && kargonomiData.status === "success") {
+                            console.log(`Kargonomi shipment created successfully for ${merchant_oid}! Tracking code: ${kargonomiData.data.tracking_code}`);
+                        } else {
+                            console.error(`Kargonomi API error for ${merchant_oid}:`, kargonomiData);
+                        }
+                    } catch (err) {
+                        console.error(`Failed to send ${merchant_oid} to Kargonomi:`, err);
+                    }
+                } else {
+                    console.warn(`Kargonomi credentials missing in .env! Order ${merchant_oid} not sent to Kargonomi.`);
+                }
+            } else {
+                console.warn(`Order data for ${merchant_oid} not found in Redis! Expired or not created?`);
+            }
         } else {
             // Payment failed
             const failed_reason_code = formData.get("failed_reason_code");

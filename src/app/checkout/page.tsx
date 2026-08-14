@@ -118,7 +118,8 @@ export default function CheckoutPage() {
                         name: formData.buyer_name,
                         email: "test@shufflecase.com", // Sabit veya formdan eklenebilir
                         address: formData.buyer_address,
-                        city: formData.buyer_state_id, // PayTR il bilgisini bekler
+                        city: formData.buyer_state_id, // Kargonomi İl ID'si
+                        district: formData.buyer_city_id, // Kargonomi İlçe ID'si
                         phone: formData.buyer_phone
                     },
                     items: items
