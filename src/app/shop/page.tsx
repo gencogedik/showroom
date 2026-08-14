@@ -6,67 +6,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "@/components/ui/product-card";
 import { Footer } from "@/components/ui/footer";
 import { useCartStore } from "@/store/cartStore";
-
-const TOTAL_PRODUCTS = 20;
-const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => ({
-    id: `TEXTURE-CASE-${(i + 1).toString().padStart(2, '0')}`,
-    title: `TEXTURE CASE #${(i + 1).toString().padStart(2, '0')}`,
-    price: 399,
-    imageSrc: `/images/${i + 1}.jpg`
-}));
+import { PRODUCTS } from "@/lib/products";
+import { Header } from "@/components/ui/header";
 
 export default function ShopPage() {
     const addItem = useCartStore((state) => state.addItem);
     const cartCount = useCartStore((state) => state.getTotalItems());
     const [isClient, setIsClient] = useState(false);
-    const [lastAdded, setLastAdded] = useState<string | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState("Tümü");
 
+    const filteredProducts = PRODUCTS.filter(p => 
+        selectedCategory === "Tümü" || p.category === selectedCategory
+    );
     // Hydration fix for zustand persist
     useEffect(() => {
         setIsClient(true);
     }, []);
 
-    const handleAddToCart = (product: typeof PRODUCTS[0]) => {
-        addItem({
-            id: product.id,
-            title: product.title,
-            price: product.price,
-            imageSrc: product.imageSrc
-        });
-        setLastAdded(product.title);
-        
-        setTimeout(() => {
-            setLastAdded(null);
-        }, 3000);
-    };
-
     return (
         <div className="min-h-screen bg-[#e5e5e5] font-mono selection:bg-red-500 selection:text-white pb-24" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
-            
-            {/* Header */}
-            <header className="sticky top-0 z-50 bg-[#e5e5e5] border-b-4 border-black p-4 md:px-8 flex items-center justify-between shadow-[0_8px_0_0_rgba(0,0,0,0.1)] backdrop-blur-md bg-opacity-90">
-                <div className="flex items-center gap-4">
-                    <Link href="/" className="hover:scale-105 transition-transform">
-                        <img src="/logo.png" alt="Shuffle Case" className="h-10 md:h-14 object-contain invert drop-shadow-[2px_2px_0_rgba(192,192,192,1)]" />
-                    </Link>
-                </div>
-                
-                <h1 className="hidden md:block text-2xl font-black uppercase tracking-widest text-black">
-                    MAĞAZA
-                </h1>
-
-                <div className="flex items-center gap-4">
-                    <Link href="/" className="hidden md:block font-bold uppercase tracking-widest text-sm hover:underline underline-offset-4 decoration-2">
-                        Geri Dön
-                    </Link>
-                    <Link href="/checkout">
-                        <button className="bg-black text-white px-4 py-2 border-2 border-black font-bold flex items-center gap-2 hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0_0_#ff0000] active:translate-y-1 active:translate-x-1 active:shadow-none">
-                            <span>SEPET</span>
-                            <span className="bg-white text-black px-2 py-0.5 rounded-full text-xs">{isClient ? cartCount : 0}</span>
-                        </button>
-                    </Link>
-                </div>
-            </header>
+            <Header />
 
             {/* Marquee */}
             <div className="w-full overflow-hidden bg-black text-white border-b-4 border-black py-3 relative flex items-center">
@@ -84,47 +43,64 @@ export default function ShopPage() {
             </div>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 md:px-8 pt-12">
-                <div className="flex justify-between items-end mb-8 border-b-4 border-black pb-4">
-                    <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-black" style={{ WebkitTextStroke: '1px black', color: 'transparent' }}>
-                        Tüm Kılıflar
-                    </h2>
-                    <span className="font-bold text-lg md:text-xl">
-                        {TOTAL_PRODUCTS} ÜRÜN
-                    </span>
+            <main className="max-w-7xl mx-auto px-4 md:px-8 pt-12 flex flex-col md:flex-row gap-8">
+                
+                {/* Filter Sidebar */}
+                <div className="w-full md:w-64 flex-shrink-0">
+                    <div className="sticky top-32">
+                        <h3 className="text-xl font-black uppercase tracking-widest border-b-4 border-black pb-2 mb-4">KREASYON</h3>
+                        <ul className="flex flex-wrap md:flex-col gap-2 pb-4 md:pb-0">
+                            {["Tümü", "Metalik", "Karanlık", "Y2K Özel"].map((cat) => (
+                                <li key={cat} className="flex-grow md:flex-grow-0">
+                                    <button
+                                        onClick={() => setSelectedCategory(cat)}
+                                        className={`w-full text-left font-bold uppercase text-sm px-4 py-2 border-2 border-black transition-all ${selectedCategory === cat ? 'bg-black text-white shadow-[4px_4px_0_0_#ff0000] translate-x-1' : 'bg-[#e5e5e5] text-black hover:bg-white'}`}
+                                    >
+                                        {cat}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
 
-                {/* Product Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {PRODUCTS.map((product, index) => (
-                        <ProductCard
-                            key={product.id}
-                            id={index + 1}
-                            title={product.title}
-                            price={`₺${product.price.toFixed(2)}`}
-                            imageSrc={product.imageSrc}
-                            onAddToCart={() => handleAddToCart(product)}
-                        />
-                    ))}
+                {/* Product Grid Container */}
+                <div className="flex-1">
+                    <div className="flex justify-between items-end mb-8 border-b-4 border-black pb-4">
+                        <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-black" style={{ WebkitTextStroke: '1px black', color: 'transparent' }}>
+                            {selectedCategory === "Tümü" ? "Tüm Kılıflar" : selectedCategory}
+                        </h2>
+                        <span className="font-bold text-lg md:text-xl">
+                            {filteredProducts.length} ÜRÜN
+                        </span>
+                    </div>
+
+                    {/* Product Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <AnimatePresence mode="popLayout">
+                            {filteredProducts.map((product, index) => (
+                                <motion.div
+                                    key={product.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <ProductCard
+                                        id={parseInt(product.id)}
+                                        title={product.title}
+                                        price={`₺${product.price.toFixed(2)}`}
+                                        imageSrc={product.imageSrc}
+                                    />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
                 </div>
             </main>
 
-            {/* Toast Notification for Cart */}
-            <AnimatePresence>
-                {lastAdded && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 20 }}
-                        className="fixed bottom-8 right-8 z-50 bg-black text-white p-4 border-4 border-white shadow-[8px_8px_0_0_#ff0000] max-w-sm"
-                    >
-                        <p className="font-mono font-bold uppercase text-sm">
-                            <span className="text-[#ff0000]">Eklendi:</span> {lastAdded}
-                        </p>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-            
+
             <Footer />
         </div>
     );

@@ -24,6 +24,7 @@ export function Footer() {
                     <Link href="/satis-sozlesmesi" className="hover:text-red-500 hover:translate-x-2 transition-all font-bold text-sm uppercase">Mesafeli Satış Sözleşmesi</Link>
                     <Link href="/iptal-iade" className="hover:text-red-500 hover:translate-x-2 transition-all font-bold text-sm uppercase">İptal ve İade Koşulları</Link>
                     <Link href="/teslimat" className="hover:text-red-500 hover:translate-x-2 transition-all font-bold text-sm uppercase">Teslimat ve Kargo</Link>
+                    <Link href="/kargo-takip" className="hover:text-red-500 hover:translate-x-2 transition-all font-bold text-sm uppercase">Kargo Takip</Link>
                 </div>
 
                 {/* Contact Links */}

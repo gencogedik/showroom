@@ -11,8 +11,8 @@ export async function POST(req: Request) {
         const total_amount = formData.get("total_amount") as string;
         const hash = formData.get("hash") as string;
         
-        const merchant_key = process.env.PAYTR_MERCHANT_KEY || "bR48pCDaEcXcu1Fq";
-        const merchant_salt = process.env.PAYTR_MERCHANT_SALT || "N1qpznBY5wNbiipX";
+        const merchant_key = (process.env.PAYTR_MERCHANT_KEY || "bR48pCDaEcXcu1Fq").trim();
+        const merchant_salt = (process.env.PAYTR_MERCHANT_SALT || "N1qpznBY5wNbiipX").trim();
 
         // Generate hash to verify it came from PayTR
         const hash_str = merchant_oid + merchant_salt + status + total_amount;

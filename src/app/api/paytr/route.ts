@@ -7,13 +7,13 @@ export async function POST(req: Request) {
         
         // --- PAYTR AYARLARI ---
         // Bu bilgileri PayTR Mağaza Paneli -> Bilgi sayfasından alıp .env.local dosyasına ekleyin.
-        const merchant_id = process.env.PAYTR_MERCHANT_ID || "TEST_MERCHANT_ID";
-        const merchant_key = process.env.PAYTR_MERCHANT_KEY || "TEST_MERCHANT_KEY";
-        const merchant_salt = process.env.PAYTR_MERCHANT_SALT || "TEST_MERCHANT_SALT";
+        const merchant_id = (process.env.PAYTR_MERCHANT_ID || "TEST_MERCHANT_ID").trim();
+        const merchant_key = (process.env.PAYTR_MERCHANT_KEY || "TEST_MERCHANT_KEY").trim();
+        const merchant_salt = (process.env.PAYTR_MERCHANT_SALT || "TEST_MERCHANT_SALT").trim();
         
         // Müşterinin sepet tutarı (PayTR kuruş olarak ister, yani 100.50 TL = 10050)
         const payment_amount = Math.round(body.total * 100);
-        const merchant_oid = "ORDER-" + Date.now();
+        const merchant_oid = "ORDER" + Date.now(); // PayTR alfanümerik ister, tire (-) kullanılamaz
         const email = body.user.email;
         const user_name = body.user.name;
         const user_address = body.user.address + " " + body.user.city;
@@ -25,16 +25,20 @@ export async function POST(req: Request) {
         const host = req.headers.get("host") || "localhost:3000";
         const baseUrl = `${protocol}://${host}`;
 
-        const merchant_ok_url = `${baseUrl}/shop`; // Başarılı dönüş URL
+        const merchant_ok_url = `${baseUrl}/success`; // Başarılı dönüş URL
         const merchant_fail_url = `${baseUrl}/checkout`; // Hata dönüş URL
         
         // Sepetteki ürünleri PayTR'nin istediği formata dönüştür
-        // Her ürün için: [ "Ürün Adı", "Fiyat", "Adet" ]
-        const user_basket = body.items.map((item: any) => [item.title, item.price.toString(), item.quantity]);
-        const user_basket_encoded = Buffer.from(JSON.stringify(user_basket)).toString("base64");
+        // Format: [['Ürün Adı', Fiyat, Adet], ['Ürün Adı 2', Fiyat 2, Adet 2]]
+        const user_basket_encoded = Buffer.from(
+            JSON.stringify(body.items.map((i: any) => [`${i.title} (${i.model})`, i.price.toString(), i.quantity]))
+        ).toString("base64");
         
+        // Canlı mod için 0, Test modu için 1
+        const test_mode = "0"; 
+
         // Güvenlik Hash (Token) Oluşturma
-        const hash_str = merchant_id + user_ip + merchant_oid + email + payment_amount + user_basket_encoded + "0" + "0" + "TL" + "1";
+        const hash_str = merchant_id + user_ip + merchant_oid + email + payment_amount + user_basket_encoded + "0" + "0" + "TL" + test_mode;
         const paytr_token = hash_str + merchant_salt;
         const token = crypto.createHmac("sha256", merchant_key).update(paytr_token).digest("base64");
 
@@ -57,7 +61,7 @@ export async function POST(req: Request) {
         paytrParams.append('merchant_fail_url', merchant_fail_url);
         paytrParams.append('timeout_limit', '30');
         paytrParams.append('currency', 'TL');
-        paytrParams.append('test_mode', '1'); // Test mode is ON initially for safety. Change to '0' to go live.
+        paytrParams.append('test_mode', test_mode);
 
         const paytrResponse = await fetch("https://www.paytr.com/odeme/api/get-token", {
             method: "POST",

@@ -71,8 +71,8 @@ function PaymentContent() {
                             src={`https://www.paytr.com/odeme/guvenli/${token}`} 
                             id="paytriframe" 
                             frameBorder="0" 
-                            scrolling="no" 
-                            className="w-full min-h-[600px]"
+                            scrolling="auto" 
+                            className="w-full h-[800px]"
                         ></iframe>
                     )}
                 </div>

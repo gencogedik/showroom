@@ -1,29 +1,35 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { CartDrawer } from "@/components/ui/cart-drawer";
+import { Toast } from "@/components/ui/toast";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Shuffle Case | Endüstriyel Dokular",
-  description: "Sıradışı dokular, endüstriyel tasarımlar ve telefonunuz için en agresif koruma.",
+  description: "Endüstriyel metal ve doku detaylı, el yapımı y2k telefon kılıfları. Telefonunu bir sanat eserine dönüştür.",
+  openGraph: {
+    title: "Shuffle Case | Endüstriyel Dokular",
+    description: "Endüstriyel metal ve doku detaylı, el yapımı y2k telefon kılıfları.",
+    url: "https://shufflecase.com",
+    siteName: "Shuffle Case",
+    locale: "tr_TR",
+    type: "website",
+  },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased bg-[#e5e5e5] text-black`}
-      >
-        <div className="min-h-full flex flex-col">{children}</div>
+    <html lang="tr">
+      <body className={inter.className}>
+        {children}
+        <CartDrawer />
+        <Toast />
       </body>
     </html>
   );
