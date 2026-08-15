@@ -103,26 +103,40 @@ export function SpinWheel() {
                                         transition: 'transform 5s cubic-bezier(0.25, 0.1, 0.15, 1)'
                                     }}
                                 >
+                                    {/* Slices */}
                                     {SEGMENTS.map((segment, i) => {
                                         const angle = 360 / SEGMENTS.length;
                                         const skewY = 90 - angle;
                                         return (
                                             <div 
-                                                key={i}
+                                                key={`slice-${i}`}
                                                 className="absolute top-0 right-0 w-1/2 h-1/2 origin-bottom-left border border-black"
                                                 style={{
                                                     backgroundColor: segment.color,
                                                     transform: `rotate(${i * angle}deg) skewY(${skewY}deg)`
                                                 }}
+                                            />
+                                        );
+                                    })}
+                                    
+                                    {/* Labels */}
+                                    {SEGMENTS.map((segment, i) => {
+                                        const angle = 360 / SEGMENTS.length;
+                                        // The right edge (3 o'clock) points to the center of the slice
+                                        const rotation = (i * angle) + (angle / 2) - 90;
+                                        return (
+                                            <div 
+                                                key={`label-${i}`}
+                                                className="absolute top-0 left-0 w-full h-full pointer-events-none"
+                                                style={{ transform: `rotate(${rotation}deg)` }}
                                             >
-                                                <div 
-                                                    className="absolute bottom-0 left-0 w-[150%] h-[150%] origin-bottom-left flex items-center justify-center text-center px-4"
-                                                    style={{
-                                                        transform: `skewY(-${skewY}deg) rotate(${angle / 2}deg) translate(20px, -50px)`,
-                                                        color: segment.color === '#000000' || segment.color === '#ff0000' ? 'white' : 'black'
-                                                    }}
-                                                >
-                                                    <span className="font-black text-xs md:text-sm uppercase tracking-tighter" style={{ transform: 'rotate(90deg)' }}>
+                                                <div className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2">
+                                                    <span 
+                                                        className="font-black text-[10px] md:text-[11px] uppercase tracking-tighter"
+                                                        style={{
+                                                            color: segment.color === '#000000' || segment.color === '#ff0000' ? 'white' : 'black',
+                                                        }}
+                                                    >
                                                         {segment.label}
                                                     </span>
                                                 </div>
