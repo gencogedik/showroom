@@ -8,7 +8,7 @@ export const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => ({
     id: (i + 1).toString(),
     title: `TEXTURE CASE #${(i + 1).toString().padStart(2, '0')}`,
     price: 399,
-    imageSrc: `/images/${i + 1}.jpg`,
+    imageSrc: `/images/${i + 1}.png`,
     category: CATEGORIES[i % CATEGORIES.length],
     isAccessory: false,
     description: "Endüstriyel metal ve doku detaylı, el yapımı y2k telefon kılıfı. Darbe emici silikon iç katman ve paslanmaz çelik hissiyatlı dış yüzey ile telefonunuzu sanatsal bir zırha dönüştürür."

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 
 const TOTAL_IMAGES = 20;
-const IMAGES = Array.from({ length: 20 }, (_, i) => `/images/${i + 1}.jpg`);
+const IMAGES = Array.from({ length: 20 }, (_, i) => `/images/${i + 1}.png`);
 
 export default function IntroAnimation() {
     const router = useRouter();
