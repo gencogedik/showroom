@@ -18,12 +18,27 @@ export default function IntroAnimation() {
     const [wonDiscount, setWonDiscount] = useState<number | null>(null);
     const [emote, setEmote] = useState<string | null>(null);
 
-    const EMOTES = ["(ಠ_ಠ)", "(^._.^)", "Beep Boop!", "[ █_█ ]", "HATA_404", "SARJ_%1"];
+    const EMOTES = [
+        "bzzt... (ಠ_ಠ)", 
+        "⚡ (^._.^) ⚡", 
+        "Beep Boop! ⚡", 
+        "[ █_█ ] *cızırtı*", 
+        "HATA_404 ⚡", 
+        "SARJ_%1... 🔌"
+    ];
+    
     const handleMascotClick = () => {
         if (emote) return;
+        
+        // Play sound
+        try {
+            const audio = new Audio('/shuffle.mp3');
+            audio.play().catch(e => console.log("Audio play failed:", e));
+        } catch (e) {}
+
         const randomEmote = EMOTES[Math.floor(Math.random() * EMOTES.length)];
         setEmote(randomEmote);
-        setTimeout(() => setEmote(null), 2000);
+        setTimeout(() => setEmote(null), 2500);
     };
 
     useEffect(() => {
@@ -156,18 +171,20 @@ export default function IntroAnimation() {
                 
                 {/* Mascot */}
                 <motion.div 
-                    className="absolute bottom-8 left-1/2 -ml-6 w-12 h-12 flex flex-col items-center justify-end pointer-events-auto cursor-pointer"
+                    className="absolute bottom-8 left-1/2 -ml-6 w-12 h-12 flex flex-col items-center justify-end pointer-events-auto cursor-pointer z-[999]"
                     style={{ x: robotX }}
                     onClick={handleMascotClick}
+                    whileTap={{ scale: 0.9, rotate: (Math.random() - 0.5) * 20 }}
                 >
                     {/* Emote Bubble */}
                     <AnimatePresence>
                         {emote && (
                             <motion.div 
                                 initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                                animate={{ opacity: 1, y: -10, scale: 1 }}
+                                animate={{ opacity: 1, y: -10, scale: 1, x: [0, -2, 2, -2, 0] }}
+                                transition={{ x: { repeat: Infinity, duration: 0.1 } }}
                                 exit={{ opacity: 0, y: 0, scale: 0.8 }}
-                                className="absolute -top-12 bg-black text-[#00ff00] border-2 border-[#00ff00] px-2 py-1 text-xs font-bold whitespace-nowrap shadow-[2px_2px_0_0_#000]"
+                                className="absolute -top-12 bg-black text-yellow-400 border-2 border-yellow-400 px-3 py-1 text-xs font-black whitespace-nowrap shadow-[4px_4px_0_0_#ff0000] z-[1000]"
                             >
                                 {emote}
                             </motion.div>
