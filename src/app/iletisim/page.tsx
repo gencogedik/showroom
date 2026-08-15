@@ -1,38 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+import { useForm, ValidationError } from '@formspree/react';
 
 export default function ContactPage() {
-    const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setStatus('sending');
-        
-        const form = e.currentTarget;
-        const formData = new FormData(form);
-
-        try {
-            const response = await fetch("https://formspree.io/f/xaewdywq", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    Accept: "application/json",
-                },
-            });
-            if (response.ok) {
-                setStatus('sent');
-                form.reset();
-            } else {
-                setStatus('idle');
-                alert("Sinyal iletilemedi, lutfen tekrar deneyin.");
-            }
-        } catch (error) {
-            setStatus('idle');
-            alert("Baglanti hatasi, lutfen tekrar deneyin.");
-        }
-    };
+    const [state, handleSubmit] = useForm('xaewdywq');
 
     return (
         <div 
@@ -55,12 +28,12 @@ export default function ContactPage() {
                         <div className="w-4 h-4 bg-[#00ff00] animate-pulse"></div>
                     </div>
 
-                    {status === 'sent' ? (
+                    {state.succeeded ? (
                         <div className="text-center py-16 animate-pulse">
                             <h2 className="text-3xl font-bold mb-4">MESAJ ILETILDI_</h2>
                             <p className="text-xl">En kisa surede donus yapilacaktir.</p>
                             <button 
-                                onClick={() => setStatus('idle')}
+                                onClick={() => window.location.reload()}
                                 className="mt-8 border-2 border-[#00ff00] px-6 py-2 hover:bg-[#00ff00] hover:text-black transition-colors"
                             >
                                 [ YENI_MESAJ_GONDER ]
@@ -86,10 +59,11 @@ export default function ContactPage() {
                                     type="email" 
                                     name="email"
                                     required
-                                    disabled={status === 'sending'}
+                                    disabled={state.submitting}
                                     className="w-full bg-transparent border-2 border-[#00ff00] text-[#00ff00] p-4 focus:outline-none focus:bg-[#00ff00]/10 transition-colors"
                                     placeholder="E-posta adresiniz..."
                                 />
+                                <ValidationError field="email" prefix="Email" errors={state.errors} className="text-red-500 mt-2 text-sm" />
                             </div>
 
                             <div>
@@ -98,18 +72,19 @@ export default function ContactPage() {
                                     name="message"
                                     required
                                     rows={5}
-                                    disabled={status === 'sending'}
+                                    disabled={state.submitting}
                                     className="w-full bg-transparent border-2 border-[#00ff00] text-[#00ff00] p-4 focus:outline-none focus:bg-[#00ff00]/10 transition-colors resize-none"
                                     placeholder="Iletmek istediginiz mesaj..."
                                 ></textarea>
+                                <ValidationError field="message" prefix="Message" errors={state.errors} className="text-red-500 mt-2 text-sm" />
                             </div>
 
                             <button 
                                 type="submit"
-                                disabled={status === 'sending'}
+                                disabled={state.submitting}
                                 className="w-full border-4 border-[#00ff00] bg-transparent text-[#00ff00] text-2xl font-black p-4 hover:bg-[#00ff00] hover:text-black transition-all active:scale-95 disabled:opacity-50"
                             >
-                                {status === 'sending' ? '[ ILETILIYOR... ]' : '[ GONDER ]'}
+                                {state.submitting ? '[ ILETILIYOR... ]' : '[ GONDER ]'}
                             </button>
                         </form>
                     )}
