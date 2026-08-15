@@ -2,13 +2,17 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Header } from '@/components/ui/header';
 
 export default function AboutPage() {
     return (
         <div 
-            className="min-h-screen bg-[#e5e5e5] text-black pt-32 pb-24 overflow-hidden relative"
+            className="min-h-screen bg-[#e5e5e5] text-black pt-0 pb-24 overflow-hidden relative"
             style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}
         >
+            <div className="w-full relative z-50 mb-16">
+                <Header />
+            </div>
             {/* Background Marquee Text */}
             <div className="absolute top-1/4 left-0 w-[200vw] -translate-y-1/2 pointer-events-none opacity-10 whitespace-nowrap overflow-hidden">
                 <motion.div 

@@ -119,7 +119,7 @@ export default function IntroAnimation() {
                         return (
                             <div 
                                 key={i}
-                                className="absolute top-0 left-0 border-4 border-black bg-white shadow-[4px_4px_0_0_#000] overflow-hidden"
+                                className="absolute top-0 left-0 overflow-visible"
                                 style={{
                                     width: cardWidth,
                                     height: cardHeight,
@@ -132,9 +132,8 @@ export default function IntroAnimation() {
                                     alt={`Case ${i+1}`} 
                                     fill 
                                     sizes="(max-width: 768px) 120px, 180px"
-                                    className="object-cover opacity-90 hover:opacity-100 transition-opacity"
+                                    className="object-contain opacity-90 hover:opacity-100 transition-opacity drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]"
                                 />
-                                <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
                             </div>
                         );
                     })}

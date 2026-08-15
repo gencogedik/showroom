@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Header } from '@/components/ui/header';
 
 const FAQS = [
     {
@@ -27,9 +28,12 @@ export default function FAQPage() {
 
     return (
         <div 
-            className="min-h-screen bg-white text-black pt-32 pb-24 relative overflow-hidden"
+            className="min-h-screen bg-white text-black pt-0 pb-24 relative overflow-hidden font-mono"
             style={{ backgroundImage: 'linear-gradient(90deg, black 2px, transparent 2px)', backgroundSize: '100% 100%, 10vw 100%' }}
         >
+            <div className="w-full relative z-50 mb-16">
+                <Header />
+            </div>
             <div className="container mx-auto px-4 max-w-4xl relative z-10">
                 <motion.div 
                     initial={{ opacity: 0, y: -20 }}

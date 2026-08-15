@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Footer } from "@/components/ui/footer";
+import { Header } from "@/components/ui/header";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function OrderTrackingPage() {
@@ -53,21 +54,9 @@ export default function OrderTrackingPage() {
         <div className="min-h-screen bg-[#e5e5e5] font-mono selection:bg-red-500 selection:text-white" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
             
             {/* Header */}
-            <header className="sticky top-0 z-50 bg-[#e5e5e5] border-b-4 border-black p-4 md:px-8 flex items-center justify-between shadow-[0_8px_0_0_rgba(0,0,0,0.1)] backdrop-blur-md bg-opacity-90">
-                <div className="flex items-center gap-4">
-                    <Link href="/" className="hover:scale-105 transition-transform">
-                        <img src="/logo.png" alt="Shuffle Case" className="h-10 md:h-14 object-contain invert drop-shadow-[2px_2px_0_rgba(192,192,192,1)]" />
-                    </Link>
-                </div>
-                
-                <h1 className="text-xl md:text-2xl font-black uppercase tracking-widest text-black">
-                    KARGO TAKİBİ
-                </h1>
-
-                <Link href="/shop" className="hidden md:block font-bold uppercase tracking-widest text-sm hover:underline underline-offset-4 decoration-2">
-                    Mağazaya Dön
-                </Link>
-            </header>
+            <div className="w-full relative z-50">
+                <Header />
+            </div>
 
             {/* Main Content */}
             <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 min-h-[70vh]">

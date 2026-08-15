@@ -3,15 +3,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useForm, ValidationError } from '@formspree/react';
+import { Header } from '@/components/ui/header';
 
 export default function ContactPage() {
     const [state, handleSubmit] = useForm('xjybevvv');
 
     return (
         <div 
-            className="min-h-screen bg-black text-[#00ff00] pt-32 pb-24 overflow-hidden relative font-mono flex items-center justify-center"
+            className="min-h-screen bg-black text-[#00ff00] pt-0 pb-24 overflow-hidden relative font-mono flex flex-col items-center justify-start"
             style={{ backgroundImage: 'linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px)', backgroundSize: '30px 30px' }}
         >
+            <div className="w-full relative z-50 mb-16">
+                <Header />
+            </div>
             {/* Radar Scanline Overlay */}
             <div className="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px]"></div>
             
