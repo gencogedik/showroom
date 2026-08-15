@@ -40,16 +40,22 @@ export async function POST(req: Request) {
                 }));
 
                 const kargonomiPayload = {
-                    order_code: merchant_oid,
-                    type: "DELIVERY",
-                    delivery_type: "address",
-                    buyer_name: order.buyer_name,
-                    buyer_phone: order.buyer_phone,
-                    buyer_address: order.buyer_address,
-                    buyer_state_id: order.buyer_state_id,
-                    buyer_city_id: order.buyer_city_id,
-                    payment_type: "0", // 0: Normal (Kredi Kartı ile ödenmiş, tahsilatsız kargo)
-                    packages: packages
+                    shipment: {
+                        sender_name: "Shuffle Case",
+                        sender_email: "hello@shufflecase.com",
+                        sender_tax_number: "1111111111", // Must be 10-11 chars
+                        sender_tax_place: "İstanbul",
+                        sender_phone: "5555555555",
+                        sender_address: "Shuffle Case Merkez, Kadıköy / İstanbul",
+                        sender_state_id: 34, // İstanbul
+                        sender_city_id: 828, // Kadıköy
+                        buyer_name: order.buyer_name,
+                        buyer_phone: order.buyer_phone,
+                        buyer_address: order.buyer_address,
+                        buyer_state_id: parseInt(order.buyer_state_id),
+                        buyer_city_id: parseInt(order.buyer_city_id),
+                        packages: packages
+                    }
                 };
 
                 // 3. Send to Kargonomi API
