@@ -33,8 +33,8 @@ export function SpinWheel() {
         if (isSpinning || hasSpun) return;
         setIsSpinning(true);
         
-        // Randomly select a segment
-        const segmentIndex = Math.floor(Math.random() * SEGMENTS.length);
+        // Rig the wheel to ALWAYS land on 20% (index 4)
+        const segmentIndex = 4;
         const segmentAngle = 360 / SEGMENTS.length;
         
         // Calculate rotation needed to land on segmentIndex.

@@ -50,15 +50,9 @@ export default function IntroAnimation() {
             damping: 15,
             mass: 2,
             onComplete: () => {
-                const discounts = [10, 15, 20];
-                const chance = Math.random();
-                if (chance > 0.3) {
-                    const discount = discounts[Math.floor(Math.random() * discounts.length)];
-                    useCartStore.getState().setGlobalDiscount(discount, 15 * 60 * 1000);
-                    setWonDiscount(discount);
-                } else {
-                    setWonDiscount(0); // Şansına Küstün
-                }
+                const discount = 20;
+                useCartStore.getState().setGlobalDiscount(discount, 15 * 60 * 1000);
+                setWonDiscount(discount);
 
                 setTimeout(() => {
                     setIsSpinning(false);
