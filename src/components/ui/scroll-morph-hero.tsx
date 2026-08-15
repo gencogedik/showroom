@@ -24,7 +24,7 @@ export default function IntroAnimation() {
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
-    const radius = isMobile ? 300 : 500;
+    const radius = isMobile ? 400 : 700;
     const cardWidth = isMobile ? 120 : 180;
     const cardHeight = isMobile ? 170 : 260;
     const anglePerItem = 360 / TOTAL_IMAGES;
