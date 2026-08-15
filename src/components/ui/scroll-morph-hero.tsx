@@ -132,7 +132,7 @@ export default function IntroAnimation() {
                                     alt={`Case ${i+1}`} 
                                     fill 
                                     sizes="(max-width: 768px) 120px, 180px"
-                                    className="object-contain opacity-90 hover:opacity-100 transition-opacity drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]"
+                                    className="object-contain opacity-90 hover:opacity-100 transition-all duration-300 scale-[1.35] md:scale-150 hover:scale-[1.45] md:hover:scale-[1.60] drop-shadow-[0_15px_15px_rgba(0,0,0,0.5)]"
                                 />
                             </div>
                         );
