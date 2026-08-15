@@ -165,7 +165,7 @@ export default function IntroAnimation() {
             </div>
 
             {/* Bottom Area: Mascot and Line */}
-            <div className="w-full h-32 relative flex flex-col justify-end pb-8 overflow-hidden pointer-events-none">
+            <div className="w-full h-32 relative flex flex-col justify-end pb-8 pointer-events-none z-[100]">
                 {/* Horizontal Line */}
                 <div className="w-full h-1 bg-black absolute bottom-8 left-0"></div>
                 
