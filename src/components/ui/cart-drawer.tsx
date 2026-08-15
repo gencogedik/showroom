@@ -136,6 +136,29 @@ export function CartDrawer() {
 
                 {items.length > 0 && (
                     <div className="p-4 border-t-4 border-black bg-white shrink-0">
+                        
+                        {/* Free Shipping Progress Bar */}
+                        <div className="mb-4">
+                            {getTotalPrice() >= 1000 ? (
+                                <div className="text-center bg-[#00ff00] text-black font-black uppercase text-sm py-1 border-2 border-black animate-pulse">
+                                    KARGO BEDAVA! 🎉
+                                </div>
+                            ) : (
+                                <div>
+                                    <div className="flex justify-between text-xs font-bold uppercase mb-1">
+                                        <span>Ücretsiz Kargo</span>
+                                        <span className="text-red-500">{(1000 - getTotalPrice()).toFixed(2)} TL Kaldı</span>
+                                    </div>
+                                    <div className="h-4 w-full bg-[#e5e5e5] border-2 border-black overflow-hidden">
+                                        <div 
+                                            className="h-full bg-black transition-all duration-500"
+                                            style={{ width: `${Math.min(100, (getTotalPrice() / 1000) * 100)}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
                         {discountAmount > 0 && isTimerActive && (
                             <div className="flex justify-between items-center text-sm font-bold uppercase text-red-500 mb-2">
                                 <span>Karıştırma İndirimi:</span>

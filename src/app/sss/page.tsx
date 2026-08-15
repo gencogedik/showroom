@@ -1,95 +1,84 @@
 "use client";
 
-import React, { useState } from "react";
-import { Header } from "@/components/ui/header";
-import { Footer } from "@/components/ui/footer";
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const FAQ_DATA = [
+const FAQS = [
     {
-        question: "Kılıflarınız hangi materyallerden üretiliyor?",
-        answer: "Tasarım serimize göre değişiklik göstermekle birlikte genel olarak yüksek dayanımlı polikarbonat arka yüzey ve darbe emici TPU (Termoplastik Poliüretan) kenarlıklardan üretilir. Y2K ve Metalik serilerimizde özel dokulu kaplamalar bulunmaktadır."
+        question: "KILIFLAR GERÇEKTEN KORUYUCU MU?",
+        answer: "Kesinlikle. Tasarımlarımız sadece estetik değil, aynı zamanda cihazınızı darbelere karşı koruyacak zırh niteliğinde sert ve dayanıklı materyallerden üretilir."
     },
     {
-        question: "Sipariş verdim, kargom ne zaman ulaşır?",
-        answer: "Standart teslimat süremiz 1-3 iş günüdür. Siparişiniz kargoya verildiğinde size takip numarası içeren bir SMS/E-posta gönderilir. Ayrıca üst menüdeki 'Kargo Takip' sayfasından da durumunu öğrenebilirsiniz."
+        question: "KARGO SÜRECİ NASIL İŞLİYOR?",
+        answer: "Siparişinizi tamamladığınız an otopilot sistemimiz devreye girer. Kargonuz anında hazırlanır ve Kargonomi güvencesiyle en kısa sürede kapınıza ulaşır. Kargo Takip sayfasından durumunu anlık izleyebilirsiniz."
     },
     {
-        question: "Kılıflar MagSafe uyumlu mu?",
-        answer: "Yeni nesil (iPhone 12 ve sonrası) tüm cihaz kılıflarımız MagSafe şarj ve aksesuarlarıyla tam uyumludur. İç kısımdaki güçlü mıknatıs halkası sayesinde şarj kesintisi yaşamazsınız."
+        question: "İADE VE DEĞİŞİM ŞARTLARI NELERDİR?",
+        answer: "Kullanılmamış ve ambalajı zarar görmemiş ürünleri teslim aldıktan sonraki 14 gün içinde koşulsuz şartsız iade edebilir veya değiştirebilirsiniz."
     },
     {
-        question: "Beğenmezsem iade edebilir miyim?",
-        answer: "Elbette. Siparişinizi teslim aldıktan sonraki 14 gün içerisinde, ürün kullanılmamış ve ambalajı zarar görmemiş olması şartıyla koşulsuz şartsız iade edebilirsiniz."
-    },
-    {
-        question: "Telefon ekranını ve kamerasını koruyor mu?",
-        answer: "Evet. Tüm Shuffle Case kılıflarında ekran ve kamera çerçevesi 1.5mm yüksekliğinde tasarlanmıştır. Telefonunuzu düz bir zemine koyduğunuzda lensleriniz veya ekranınız yüzeye temas etmez."
-    },
-    {
-        question: "Karıştırma İndirimi (Şanslı Ürün) nedir?",
-        answer: "Anasayfamızdaki 'Karıştır' çarkını çevirdiğinizde sistem rastgele bir ürünü seçer. Eğer bu ürünü 15 dakika içerisinde sepetinize eklerseniz otomatik olarak %15 özel indirim kazanırsınız. Fırsatı kaçırmayın!"
+        question: "Y2K / BRUTALİST NE DEMEK?",
+        answer: "Y2K, 2000'lerin başındaki retro-fütüristik estetiği temsil eder. Brutalizm ise web tasarımında işlevselliği, hamliği ve kalın çizgileri vurgulayan bir sanat akımıdır. Biz bu ikisini telefon kılıflarında birleştiriyoruz."
     }
 ];
 
 export default function FAQPage() {
-    const [openIndex, setOpenIndex] = useState<number | null>(0);
+    const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     return (
-        <div className="min-h-screen bg-[#e5e5e5] font-mono selection:bg-red-500 selection:text-white pb-24" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
-            <Header />
-
-            <main className="max-w-4xl mx-auto px-4 md:px-8 py-12 lg:py-24">
-                <div className="mb-12">
-                    <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-black mb-4">
-                        SIKÇA SORULAN SORULAR
+        <div 
+            className="min-h-screen bg-white text-black pt-32 pb-24 relative overflow-hidden"
+            style={{ backgroundImage: 'linear-gradient(90deg, black 2px, transparent 2px)', backgroundSize: '100% 100%, 10vw 100%' }}
+        >
+            <div className="container mx-auto px-4 max-w-4xl relative z-10">
+                <motion.div 
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-16 border-b-8 border-black pb-8"
+                >
+                    <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter">
+                        S.S.S. <br/>
+                        <span className="text-3xl md:text-5xl text-gray-400">SIKÇA SORULAN SORULAR</span>
                     </h1>
-                    <p className="text-xl font-bold bg-black text-white p-2 inline-block">
-                        Aklınıza takılan her şeyin cevabı burada.
-                    </p>
-                </div>
+                </motion.div>
 
-                <div className="flex flex-col gap-4">
-                    {FAQ_DATA.map((faq, index) => {
-                        const isOpen = openIndex === index;
-                        return (
-                            <div 
-                                key={index} 
-                                className={`border-4 border-black bg-white transition-all duration-300 ${isOpen ? 'shadow-[8px_8px_0_0_#ff0000] -translate-y-1 -translate-x-1' : 'shadow-[4px_4px_0_0_#000] hover:shadow-[6px_6px_0_0_#000]'}`}
+                <div className="space-y-6">
+                    {FAQS.map((faq, i) => (
+                        <motion.div 
+                            key={i}
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            className="border-4 border-black bg-[#e5e5e5] shadow-[8px_8px_0_0_#000]"
+                        >
+                            <button
+                                onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                                className="w-full flex justify-between items-center p-6 text-left hover:bg-black hover:text-white transition-colors focus:outline-none"
                             >
-                                <button
-                                    onClick={() => setOpenIndex(isOpen ? null : index)}
-                                    className="w-full text-left p-6 flex justify-between items-center focus:outline-none"
-                                >
-                                    <h3 className={`text-lg md:text-xl font-black uppercase pr-4 ${isOpen ? 'text-red-500' : 'text-black'}`}>
-                                        {faq.question}
-                                    </h3>
-                                    <span className="text-3xl font-black font-mono w-8 text-center transition-transform duration-300 flex-shrink-0" style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0)' }}>
-                                        +
-                                    </span>
-                                </button>
-                                
-                                <div 
-                                    className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 border-t-4 border-black' : 'max-h-0 opacity-0'}`}
-                                >
-                                    <p className="p-6 text-base md:text-lg font-medium leading-relaxed bg-[#f0f0f0]">
-                                        {faq.answer}
-                                    </p>
-                                </div>
-                            </div>
-                        );
-                    })}
+                                <span className="text-xl md:text-2xl font-black tracking-widest">{faq.question}</span>
+                                <span className="text-3xl font-bold ml-4">
+                                    {openIndex === i ? '−' : '+'}
+                                </span>
+                            </button>
+                            
+                            <AnimatePresence>
+                                {openIndex === i && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="overflow-hidden bg-white border-t-4 border-black"
+                                    >
+                                        <div className="p-6 text-lg md:text-xl font-mono font-bold leading-relaxed">
+                                            {faq.answer}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
+                    ))}
                 </div>
-                
-                <div className="mt-16 p-8 border-4 border-black bg-white shadow-[8px_8px_0_0_#000] text-center">
-                    <h2 className="text-2xl font-black uppercase mb-4">Aradığınız cevabı bulamadınız mı?</h2>
-                    <p className="mb-6 font-bold">Destek ekibimiz sizin için burada.</p>
-                    <a href="/iletisim" className="inline-block bg-black text-white px-8 py-4 font-black uppercase tracking-widest border-2 border-black hover:bg-red-500 transition-colors">
-                        BİZE ULAŞIN
-                    </a>
-                </div>
-            </main>
-
-            <Footer />
+            </div>
         </div>
     );
 }

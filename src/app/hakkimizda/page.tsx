@@ -1,63 +1,70 @@
-import React from "react";
-import { Header } from "@/components/ui/header";
-import { Footer } from "@/components/ui/footer";
-import Image from "next/image";
+"use client";
 
-export const metadata = {
-    title: "Hakkımızda | Shuffle Case",
-    description: "Sıradışı dokular, endüstriyel tasarımlar ve telefonunuz için en agresif koruma.",
-};
+import React from 'react';
+import { motion } from 'framer-motion';
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-[#e5e5e5] font-mono selection:bg-red-500 selection:text-white pb-24" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
-            <Header />
+        <div 
+            className="min-h-screen bg-[#e5e5e5] text-black pt-32 pb-24 overflow-hidden relative"
+            style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+        >
+            {/* Background Marquee Text */}
+            <div className="absolute top-1/4 left-0 w-[200vw] -translate-y-1/2 pointer-events-none opacity-10 whitespace-nowrap overflow-hidden">
+                <motion.div 
+                    className="text-[20vw] font-black leading-none uppercase tracking-tighter"
+                    animate={{ x: [0, -1000] }}
+                    transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                >
+                    SHUFFLE CASE // KILIF DEĞİL ZIRH // Y2K VIBES //
+                </motion.div>
+            </div>
 
-            <main className="max-w-5xl mx-auto px-4 md:px-8 py-12 lg:py-24">
-                
-                {/* Hero Section */}
-                <div className="border-4 border-black bg-white shadow-[16px_16px_0_0_#000] p-8 md:p-16 mb-16 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-red-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 -translate-y-1/2"></div>
-                    
-                    <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-black mb-8 leading-none" style={{ WebkitTextStroke: '1px black', color: 'transparent' }}>
-                        DOKUYU HİSSET.
+            <div className="container mx-auto px-4 relative z-10">
+                <motion.div 
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, type: "spring" }}
+                    className="max-w-4xl mx-auto border-8 border-black bg-white p-8 md:p-16 shadow-[16px_16px_0_0_#000]"
+                >
+                    <div className="bg-black text-white w-fit px-4 py-2 mb-8 border-2 border-black font-mono font-bold tracking-widest uppercase">
+                        Sistem Başlatıldı: 2024
+                    </div>
+
+                    <h1 className="text-5xl md:text-8xl font-black uppercase leading-[0.85] tracking-tighter mb-12">
+                        TELEFONUNU <br />
+                        <span className="text-red-500">SIRADANLIKTAN</span><br />
+                        KURTAR.
                     </h1>
-                    
-                    <p className="text-xl md:text-2xl font-bold leading-relaxed max-w-3xl border-l-8 border-red-500 pl-6">
-                        Telefon kılıfı sadece bir koruma aracı değildir. O, sizin tarzınızın, agresifliğinizin ve yansıtmak istediğiniz kimliğin bir uzantısıdır. Shuffle Case, "sıradan" olana karşı bir isyandır.
-                    </p>
-                </div>
 
-                {/* Grid Content */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-                    <div className="border-4 border-black bg-[#c0c0c0] p-8 shadow-[8px_8px_0_0_#000] transform -rotate-1 hover:rotate-0 transition-transform">
-                        <h2 className="text-3xl font-black uppercase mb-4 border-b-4 border-black pb-2">Brutalist Felsefe</h2>
-                        <p className="font-medium text-lg leading-relaxed">
-                            Tasarım dilimiz, ham materyallerin güzelliğini ve işlevselliği öne çıkaran Brutalizm ve Y2K estetiğinden ilham alır. Gizlemeye çalışmıyoruz; vidaları, dokuları ve pürüzleri gururla sergiliyoruz. Asimetrik kesimler ve metalik parlamalar, her bir kılıfın karakterini belirler.
+                    <div className="space-y-8 font-mono text-lg md:text-2xl font-bold leading-relaxed">
+                        <p>
+                            Biz, telefon kılıfının sadece bir "koruyucu" olduğuna inanmıyoruz. O, senin zırhın, senin karakterin ve senin yansımandır.
+                        </p>
+                        
+                        <div className="border-l-8 border-red-500 pl-6 my-12 bg-[#e5e5e5] p-6 shadow-[4px_4px_0_0_#000]">
+                            "Y2K estetiğini brutalist tasarım ile harmanlıyor, teknolojiyi nostaljiyle buluşturuyoruz."
+                        </div>
+
+                        <p>
+                            Geleceğin dokusunu geçmişin ruhuyla birleştiren tasarımlarımız, sıradanlığa açılmış bir savaştır. 
+                            Plastik yığınlarından sıkılanlar, metalik soğukluğu ve cesur renkleri arayanlar için buradayız.
                         </p>
                     </div>
 
-                    <div className="border-4 border-black bg-white p-8 shadow-[8px_8px_0_0_#ff0000] transform rotate-1 hover:rotate-0 transition-transform flex flex-col justify-center">
-                        <h2 className="text-3xl font-black uppercase mb-4 text-red-500">Ödünsüz Koruma</h2>
-                        <p className="font-bold text-lg leading-relaxed">
-                            Tarzımız agresif, ancak korumamız çok daha agresif. "Military-grade" (askeri standartlarda) testlerden geçirilmiş darbe emici köşe tasarımlarımızla telefonunuz, yere düşmeyi bir zayıflık değil, bir test olarak görecek.
-                        </p>
+                    <div className="mt-16 flex flex-wrap gap-4 font-black text-xl">
+                        <span className="border-4 border-black px-6 py-3 uppercase tracking-widest shadow-[4px_4px_0_0_#ff0000] hover:bg-black hover:text-white transition-colors cursor-default">
+                            #BRUTALİZM
+                        </span>
+                        <span className="border-4 border-black px-6 py-3 uppercase tracking-widest shadow-[4px_4px_0_0_#ff0000] hover:bg-black hover:text-white transition-colors cursor-default">
+                            #Y2K
+                        </span>
+                        <span className="border-4 border-black px-6 py-3 uppercase tracking-widest shadow-[4px_4px_0_0_#ff0000] hover:bg-black hover:text-white transition-colors cursor-default">
+                            #ZIRH
+                        </span>
                     </div>
-                </div>
-
-                {/* Image / Vibe Section */}
-                <div className="relative w-full aspect-[21/9] border-4 border-black shadow-[12px_12px_0_0_#000] overflow-hidden mb-16 bg-black flex items-center justify-center group">
-                    <div className="absolute inset-0 z-10 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
-                    <h2 className="relative z-20 text-4xl md:text-6xl font-black text-white mix-blend-difference tracking-widest text-center">
-                        KURALLARI KARIŞTIR.
-                    </h2>
-                    {/* Noise Overlay */}
-                    <div className="absolute inset-0 z-30 opacity-30 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
-                </div>
-
-            </main>
-
-            <Footer />
+                </motion.div>
+            </div>
         </div>
     );
 }

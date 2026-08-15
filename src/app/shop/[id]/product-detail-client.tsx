@@ -106,12 +106,23 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 </div>
             )}
 
-            <main className="max-w-6xl mx-auto px-4 md:px-8 py-12 lg:py-24">
+            {/* Background Marquee Text for Product Name */}
+            <div className="absolute top-1/4 left-0 w-[200vw] -translate-y-1/2 pointer-events-none opacity-5 whitespace-nowrap overflow-hidden z-0">
+                <motion.div 
+                    className="text-[15vw] font-black leading-none uppercase tracking-tighter"
+                    animate={{ x: [0, -1000] }}
+                    transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                >
+                    {product.title} // {product.title} // {product.title} //
+                </motion.div>
+            </div>
+
+            <main className="max-w-6xl mx-auto px-4 md:px-8 py-12 lg:py-24 relative z-10">
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
                     
                     {/* Left: Image (Carousel) */}
                     <div className="w-full lg:w-1/2">
-                        <div className="relative group">
+                        <div className="relative group cursor-crosshair">
                             <motion.div 
                                 className={`relative aspect-[3/4] w-full shadow-[16px_16px_0_0_#000] bg-white p-4 transition-transform ${shake ? 'animate-shake scale-105' : ''}`}
                             >
@@ -121,7 +132,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                                         alt={`${product.title} - Görsel ${currentImageIndex + 1}`} 
                                         fill
                                         sizes="(max-width: 1024px) 100vw, 50vw"
-                                        className="object-cover transition-opacity duration-300"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
 
                                     {/* Noise overlay for texture */}
@@ -176,9 +187,15 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                             </p>
                         </div>
 
-                        <p className="text-lg mb-8 font-medium leading-relaxed bg-white border-2 border-black p-4 shadow-[4px_4px_0_0_#000]">
+                        <p className="text-lg mb-6 font-medium leading-relaxed bg-white border-2 border-black p-4 shadow-[4px_4px_0_0_#000]">
                             {product.description}
                         </p>
+
+                        <div className="flex flex-wrap gap-2 mb-8">
+                            <span className="bg-black text-white px-3 py-1 font-bold text-xs uppercase tracking-widest border border-black">#DARBEYE_DAYANIKLI</span>
+                            <span className="bg-white text-black px-3 py-1 font-bold text-xs uppercase tracking-widest border-2 border-black">#Y2K_ESTETIK</span>
+                            <span className="bg-red-500 text-white px-3 py-1 font-bold text-xs uppercase tracking-widest border border-black">#PREMIUM_DOKU</span>
+                        </div>
 
                         <div className="mb-8">
                             <label className="block text-xl font-black uppercase mb-4 flex justify-between items-center">
