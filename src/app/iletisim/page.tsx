@@ -93,8 +93,8 @@ export default function ContactPage() {
                 {/* Additional Info */}
                 <div className="mt-12 text-center space-y-2 opacity-70">
                     <p>{'>'} MERKEZ_USSU: Elmalikent, Adem Yavuz Cd. No17/A, Umraniye / Istanbul</p>
-                    <p>{'>'} RADAR_AGI: hello@shufflecase.com</p>
-                    <p>{'>'} SINYAL: +90 (555) 555 55 55</p>
+                    <p>{'>'} RADAR_AGI: shufflekap@gmail.com</p>
+                    <p>{'>'} SINYAL: +90 (541) 192 52 06</p>
                 </div>
             </div>
         </div>
