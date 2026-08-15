@@ -34,9 +34,9 @@ export async function POST(request: Request) {
                 sender_tax_number: "1111111111", // Must be 10-11 chars
                 sender_tax_place: "İstanbul",
                 sender_phone: "5555555555",
-                sender_address: "Shuffle Case Merkez, Kadıköy / İstanbul",
+                sender_address: "Elmalıkent, Adem Yavuz Cd. No17/A, 34764 Ümraniye/İstanbul",
                 sender_state_id: 34, // İstanbul
-                sender_city_id: 828, // Kadıköy
+                sender_city_id: 828, // TODO: Ümraniye'nin gerçek Kargonomi ID'si ile değiştirilecek (Şifreler gelince)
                 buyer_name,
                 buyer_phone,
                 buyer_address,
