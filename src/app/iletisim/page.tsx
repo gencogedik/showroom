@@ -47,7 +47,7 @@ export default function ContactPage() {
                                     type="text" 
                                     name="name"
                                     required
-                                    disabled={status === 'sending'}
+                                    disabled={state.submitting}
                                     className="w-full bg-transparent border-2 border-[#00ff00] text-[#00ff00] p-4 focus:outline-none focus:bg-[#00ff00]/10 transition-colors"
                                     placeholder="Isminizi girin..."
                                 />
