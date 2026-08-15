@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, animate, useTransform } from "framer-motion";
+import { motion, useMotionValue, animate, useTransform, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
@@ -16,6 +16,15 @@ export default function IntroAnimation() {
     const [isSpinning, setIsSpinning] = useState(false);
     const rotation = useMotionValue(0);
     const [wonDiscount, setWonDiscount] = useState<number | null>(null);
+    const [emote, setEmote] = useState<string | null>(null);
+
+    const EMOTES = ["(ಠ_ಠ)", "(^._.^)", "Beep Boop!", "[ █_█ ]", "HATA_404", "SARJ_%1"];
+    const handleMascotClick = () => {
+        if (emote) return;
+        const randomEmote = EMOTES[Math.floor(Math.random() * EMOTES.length)];
+        setEmote(randomEmote);
+        setTimeout(() => setEmote(null), 2000);
+    };
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -147,9 +156,23 @@ export default function IntroAnimation() {
                 
                 {/* Mascot */}
                 <motion.div 
-                    className="absolute bottom-8 left-1/2 -ml-6 w-12 h-12 flex flex-col items-center justify-end"
+                    className="absolute bottom-8 left-1/2 -ml-6 w-12 h-12 flex flex-col items-center justify-end pointer-events-auto cursor-pointer"
                     style={{ x: robotX }}
+                    onClick={handleMascotClick}
                 >
+                    {/* Emote Bubble */}
+                    <AnimatePresence>
+                        {emote && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                                animate={{ opacity: 1, y: -10, scale: 1 }}
+                                exit={{ opacity: 0, y: 0, scale: 0.8 }}
+                                className="absolute -top-12 bg-black text-[#00ff00] border-2 border-[#00ff00] px-2 py-1 text-xs font-bold whitespace-nowrap shadow-[2px_2px_0_0_#000]"
+                            >
+                                {emote}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     {/* Tiny Brutalist SVG Robot */}
                     <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="12" y="16" width="24" height="24" fill="black" />
