@@ -35,7 +35,7 @@ export async function POST(request: Request) {
                 sender_email: "shufflekap@gmail.com",
                 sender_tax_number: "32716823642",
                 sender_tax_place: "Ümraniye",
-                sender_phone: "05411925206",
+                sender_phone: "5411925206",
                 sender_address: "Elmalıkent, Adem Yavuz Cd. No17/A, 34764 Ümraniye/İstanbul",
                 sender_state_id: 34, // İstanbul
                 sender_city_id: 828, // TODO: Ümraniye'nin gerçek Kargonomi ID'si ile değiştirilecek (Şifreler gelince)
