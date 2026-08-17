@@ -7,16 +7,18 @@ export async function POST(request: Request) {
         // Basic validation for required fields according to Kargonomi API
         const { 
             buyer_name, 
+            buyer_email,
             buyer_phone, 
             buyer_address, 
             buyer_state_id, 
             buyer_city_id, 
+            reference_no,
             packages 
         } = body;
 
-        if (!buyer_name || !buyer_phone || !buyer_address || !buyer_state_id || !buyer_city_id || !packages || packages.length === 0) {
+        if (!buyer_name || !buyer_email || !buyer_phone || !buyer_address || !buyer_state_id || !buyer_city_id || !packages || packages.length === 0) {
             return NextResponse.json(
-                { error: 'Lütfen tüm zorunlu teslimat bilgilerini eksiksiz doldurun.' },
+                { error: 'Lütfen tüm zorunlu teslimat bilgilerini (E-posta dâhil) eksiksiz doldurun.' },
                 { status: 400 }
             );
         }
@@ -36,7 +38,10 @@ export async function POST(request: Request) {
                 sender_address: "Elmalıkent, Adem Yavuz Cd. No17/A, 34764 Ümraniye/İstanbul",
                 sender_state_id: 34, // İstanbul
                 sender_city_id: 828, // TODO: Ümraniye'nin gerçek Kargonomi ID'si ile değiştirilecek (Şifreler gelince)
+                reference_no: reference_no || `ORD-${Date.now()}`,
+                ecommerce_provider_order_no: reference_no || `ORD-${Date.now()}`,
                 buyer_name,
+                buyer_email,
                 buyer_phone,
                 buyer_address,
                 buyer_state_id: parseInt(buyer_state_id),

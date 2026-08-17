@@ -121,7 +121,7 @@ export default function OrderTrackingPage() {
                                     <p className="text-sm mt-2 font-bold text-gray-500">Firma: {cargoData?.shipping_provider_name || "Kargonomi"}</p>
                                     
                                     {cargoData?.shipping_webservice_tracking_code && (
-                                        <a href={`https://kargotakip.com/${cargoData.shipping_webservice_tracking_code}`} target="_blank" rel="noreferrer" className="inline-block mt-4 text-sm font-bold bg-white border-2 border-black px-4 py-2 hover:bg-black hover:text-white transition-colors uppercase tracking-wider">
+                                        <a href={cargoData.shipping_tracking_url || `https://www.google.com/search?q=${encodeURIComponent(cargoData.shipping_provider_name || 'Kargo')}+takip+${cargoData.shipping_webservice_tracking_code}`} target="_blank" rel="noreferrer" className="inline-block mt-4 text-sm font-bold bg-white border-2 border-black px-4 py-2 hover:bg-black hover:text-white transition-colors uppercase tracking-wider">
                                             Kargo Firması Sayfasında Gör ↗
                                         </a>
                                     )}
@@ -158,11 +158,11 @@ export default function OrderTrackingPage() {
 
                                     {/* Step 3 (Current) */}
                                     <div className="flex flex-row md:flex-col items-center md:items-center gap-4 z-10 w-full md:w-1/3">
-                                        <div className={`w-12 h-12 ${cargoData?.status === 'shipped' || cargoData?.status === 'delivered' ? 'bg-green-500 text-black animate-pulse' : 'bg-white text-black'} border-4 border-black flex items-center justify-center font-black`}>
+                                        <div className={`w-12 h-12 ${['shipped', 'delivered', 'in_transit'].includes(cargoData?.status) ? 'bg-green-500 text-black animate-pulse' : 'bg-white text-black'} border-4 border-black flex items-center justify-center font-black`}>
                                             {cargoData?.status === 'delivered' ? '✓' : '3'}
                                         </div>
                                         <div>
-                                            <p className={`font-black uppercase ${cargoData?.status === 'shipped' || cargoData?.status === 'delivered' ? 'text-green-600' : 'text-gray-400'} text-left md:text-center mt-2`}>
+                                            <p className={`font-black uppercase ${['shipped', 'delivered', 'in_transit'].includes(cargoData?.status) ? 'text-green-600' : 'text-gray-400'} text-left md:text-center mt-2`}>
                                                 Kargoya Verildi
                                             </p>
                                         </div>

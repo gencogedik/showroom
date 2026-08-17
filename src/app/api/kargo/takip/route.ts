@@ -32,6 +32,7 @@ export async function POST(request: Request) {
                     status_label: "Kargoya Verildi",
                     ecommerce_provider_order_no: orderId,
                     buyer_name: "Test Müşteri",
+                    buyer_email: email,
                     created_at: new Date(Date.now() - 86400000).toISOString(), // Yesterday
                     updated_at: new Date().toISOString()
                 },
@@ -62,8 +63,11 @@ export async function POST(request: Request) {
         const data = await response.json();
         const shipments = data.data || [];
 
-        // Find the specific shipment matching the ecommerce_provider_order_no
-        const targetShipment = shipments.find((s: any) => s.ecommerce_provider_order_no === orderId);
+        // Find the specific shipment matching the order number AND the exact email
+        const targetShipment = shipments.find((s: any) => 
+            (s.ecommerce_provider_order_no === orderId || s.reference_no === orderId) && 
+            s.buyer_email?.toLowerCase() === email.toLowerCase()
+        );
 
         if (!targetShipment) {
             return NextResponse.json(
