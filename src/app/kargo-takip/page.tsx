@@ -102,7 +102,7 @@ export default function OrderTrackingPage() {
                             <label className="font-bold uppercase tracking-wider text-sm">E-Posta Adresi</label>
                             <input 
                                 type="email" 
-                                placeholder="Örn: hello@shufflecase.com" 
+                                placeholder="Örn: shufflekap@gmail.com" 
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full bg-[#e5e5e5] border-2 border-black p-4 font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_0_#000] transition-all"

@@ -16,6 +16,14 @@ export function Footer() {
                         {/* 256 BIT SSL BADGE */}
                         <div className="border-2 border-white px-3 py-1 font-bold text-xs">256-BIT SSL GÜVENCESİ</div>
                     </div>
+                    <div className="flex gap-4 mt-2">
+                        <a href="https://instagram.com/shuffle_case" target="_blank" rel="noreferrer" className="text-white hover:text-[#ff0000] hover:scale-110 transition-all font-bold uppercase underline">
+                            [ INSTAGRAM ]
+                        </a>
+                        <a href="https://tiktok.com/@shufflekap" target="_blank" rel="noreferrer" className="text-white hover:text-[#ff0000] hover:scale-110 transition-all font-bold uppercase underline">
+                            [ TIKTOK ]
+                        </a>
+                    </div>
                 </div>
 
                 {/* Legal Links */}

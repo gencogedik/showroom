@@ -169,7 +169,7 @@ export default function CheckoutPage() {
                                     <input 
                                         type="email" 
                                         name="buyer_email"
-                                        placeholder="Örn: hello@shufflecase.com" 
+                                        placeholder="Örn: shufflekap@gmail.com" 
                                         value={formData.buyer_email}
                                         onChange={handleChange}
                                         className="w-full bg-[#e5e5e5] border-2 border-black p-4 font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_0_#000] transition-all"
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
                                     <input 
                                         type="tel" 
                                         name="buyer_phone"
-                                        placeholder="Örn: 5551234567" 
+                                        placeholder="Örn: 05411925206" 
                                         value={formData.buyer_phone}
                                         onChange={handleChange}
                                         className="w-full bg-[#e5e5e5] border-2 border-black p-4 font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_0_#000] transition-all"
