@@ -40,34 +40,59 @@ export async function POST(request: Request) {
             });
         }
 
-        // Real Kargonomi API Integration
-        // Since we want a specific order, we could filter it locally if no search param exists, 
-        // or rely on Kargonomi's search param if documented. Assuming it lists all for now and we find ours.
-        const response = await fetch('https://app.kargonomi.com.tr/api/v1/shipments', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${bearerToken}`
-            }
-        });
+        // First, check if orderId is a pure number (which means it's likely a Kargonomi shipment ID)
+        // This avoids pagination issues where a shipment might not be on the first page of /shipments
+        let targetShipment = null;
 
-        if (!response.ok) {
-            console.error("Kargonomi API Hatası:", await response.text());
-            return NextResponse.json(
-                { error: 'Kargo sistemine bağlanılamadı. Lütfen daha sonra tekrar deneyin.' },
-                { status: 502 }
-            );
+        if (/^\d+$/.test(orderId)) {
+            const singleResponse = await fetch(`https://app.kargonomi.com.tr/api/v1/shipments/${orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${bearerToken}`
+                }
+            });
+
+            if (singleResponse.ok) {
+                const singleData = await singleResponse.json();
+                if (singleData.data) {
+                    // Verify email matches to prevent looking up others' orders
+                    const shipmentEmail = (singleData.data.buyer?.buyer_email || singleData.data.buyer_email || "");
+                    if (shipmentEmail.toLowerCase() === email.toLowerCase()) {
+                        targetShipment = singleData.data;
+                    }
+                }
+            }
         }
 
-        const data = await response.json();
-        const shipments = data.data || [];
+        // Fallback to searching the list if direct ID lookup failed or it's a reference number
+        if (!targetShipment) {
+            const response = await fetch('https://app.kargonomi.com.tr/api/v1/shipments', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${bearerToken}`
+                }
+            });
 
-        // Find the specific shipment matching the order number (or shipment ID) AND the exact email
-        const targetShipment = shipments.find((s: any) => 
-            (s.ecommerce_provider_order_no === orderId || s.reference_no === orderId || s.id?.toString() === orderId) && 
-            (s.buyer?.buyer_email || s.buyer_email)?.toLowerCase() === email.toLowerCase()
-        );
+            if (!response.ok) {
+                console.error("Kargonomi API Hatası:", await response.text());
+                return NextResponse.json(
+                    { error: 'Kargo sistemine bağlanılamadı. Lütfen daha sonra tekrar deneyin.' },
+                    { status: 502 }
+                );
+            }
+
+            const data = await response.json();
+            const shipments = data.data || [];
+
+            targetShipment = shipments.find((s: any) => 
+                (s.ecommerce_provider_order_no === orderId || s.reference_no === orderId || s.id?.toString() === orderId) && 
+                (s.buyer?.buyer_email || s.buyer_email)?.toLowerCase() === email.toLowerCase()
+            );
+        }
 
         if (!targetShipment) {
             return NextResponse.json(
