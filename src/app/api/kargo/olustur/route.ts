@@ -42,10 +42,10 @@ export async function POST(request: Request) {
                 ecommerce_provider_order_no: reference_no || `ORD-${Date.now()}`,
                 buyer_name,
                 buyer_email,
-                buyer_phone,
-                buyer_address,
-                buyer_state_id: parseInt(buyer_state_id),
-                buyer_city_id: parseInt(buyer_city_id),
+                buyer_phone: buyer_phone.replace(/[^0-9]/g, "").slice(-10),
+                buyer_address: `${buyer_city_id} - ${buyer_address}`,
+                buyer_state_id: parseInt(buyer_state_id) || 34,
+                buyer_city_id: 1, // Dummy ID
                 packages: packages.map((pkg: any) => ({
                     content: pkg.content || "Telefon Kılıfı",
                     desi: pkg.desi || "1"

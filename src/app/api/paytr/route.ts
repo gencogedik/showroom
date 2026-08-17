@@ -20,8 +20,8 @@ export async function POST(req: Request) {
         const user_address = body.user.address + " " + body.user.city;
         
         let user_phone = body.user.phone.replace(/[^0-9]/g, ""); // Remove non-numeric
-        if (user_phone.startsWith("0")) {
-            user_phone = user_phone.substring(1);
+        if (user_phone.length >= 10) {
+            user_phone = user_phone.slice(-10); // Sadece son 10 haneyi al (5411925206)
         }
 
         const user_ip = req.headers.get("x-forwarded-for") || "127.0.0.1";

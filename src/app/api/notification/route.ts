@@ -54,9 +54,9 @@ export async function POST(req: Request) {
                         buyer_name: order.buyer_name,
                         buyer_email: order.buyer_email || "",
                         buyer_phone: order.buyer_phone,
-                        buyer_address: order.buyer_address,
-                        buyer_state_id: parseInt(order.buyer_state_id),
-                        buyer_city_id: parseInt(order.buyer_city_id),
+                        buyer_address: `${order.buyer_city_id} - ${order.buyer_address}`,
+                        buyer_state_id: parseInt(order.buyer_state_id) || 34,
+                        buyer_city_id: 1, // Dummy ID (ilçe ID listesi olmadığı için varsayılan gönderip adrese ekledik)
                         packages: packages
                     }
                 };
