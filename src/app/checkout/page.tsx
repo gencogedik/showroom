@@ -98,7 +98,7 @@ export default function CheckoutPage() {
             return;
         }
 
-        if (!formData.buyer_name || !formData.buyer_phone || !formData.buyer_address) {
+        if (!formData.buyer_name || !formData.buyer_phone || !formData.buyer_address || !formData.buyer_email || !formData.buyer_district) {
             setError("LÜTFEN TÜM ALANLARI DOLDURUN!");
             setTimeout(() => setError(null), 3000);
             return;

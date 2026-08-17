@@ -55,7 +55,12 @@ export async function POST(req: Request) {
             items: body.items,
             amount: payment_amount
         };
-        await redis.set(`order:${merchant_oid}`, JSON.stringify(orderData), 'EX', 3600);
+        try {
+            await redis.set(`order:${merchant_oid}`, JSON.stringify(orderData), 'EX', 3600);
+        } catch (redisErr) {
+            console.error("Redis Hatası (Kargonomi Entegrasyonu için gerekli):", redisErr);
+            // We do NOT throw here so the PayTR checkout can still proceed even if Redis is broken.
+        }
 
         // --- GERÇEK PAYTR İSTEĞİ ---
         const paytrParams = new URLSearchParams();
