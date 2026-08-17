@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Footer } from "@/components/ui/footer";
 import { Header } from "@/components/ui/header";
@@ -13,10 +13,8 @@ export default function OrderTrackingPage() {
     const [error, setError] = useState<string | null>(null);
     const [cargoData, setCargoData] = useState<any>(null);
 
-    const handleTrack = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        if (!orderId || !email) {
+    const fetchKargoData = useCallback(async (currentOrderId: string, currentEmail: string) => {
+        if (!currentOrderId || !currentEmail) {
             setError("LÜTFEN TÜM ALANLARI DOLDURUN!");
             setTimeout(() => setError(null), 2000);
             return;
@@ -29,7 +27,7 @@ export default function OrderTrackingPage() {
             const response = await fetch('/api/kargo/takip', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId, email })
+                body: JSON.stringify({ orderId: currentOrderId, email: currentEmail })
             });
 
             const result = await response.json();
@@ -48,7 +46,27 @@ export default function OrderTrackingPage() {
             setStatus("idle");
             setTimeout(() => setError(null), 3000);
         }
+    }, []);
+
+    const handleTrack = (e: React.FormEvent) => {
+        e.preventDefault();
+        fetchKargoData(orderId, email);
     };
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const initOrderId = params.get('order_id');
+            const initEmail = params.get('email');
+            
+            if (initOrderId) setOrderId(initOrderId);
+            if (initEmail) setEmail(initEmail);
+
+            if (initOrderId && initEmail) {
+                fetchKargoData(initOrderId, initEmail);
+            }
+        }
+    }, [fetchKargoData]);
 
     return (
         <div className="min-h-screen bg-[#e5e5e5] font-mono selection:bg-red-500 selection:text-white" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
@@ -117,7 +135,7 @@ export default function OrderTrackingPage() {
                                         Durum
                                     </div>
                                     <h3 className="text-2xl font-black uppercase text-green-600 mb-2">{cargoData?.status_label || "BİLİNMİYOR"}</h3>
-                                    <p className="font-bold">Takip No: <span className="font-mono bg-white px-2 py-1 border border-black ml-2">{cargoData?.shipping_webservice_tracking_code || "-"}</span></p>
+                                    <p className="font-bold">Takip No: <span className="font-mono bg-white px-2 py-1 border border-black ml-2">{cargoData?.shipping_webservice_tracking_code || cargoData?.id || "-"}</span></p>
                                     <p className="text-sm mt-2 font-bold text-gray-500">Firma: {cargoData?.shipping_provider_name || "Kargonomi"}</p>
                                     
                                     {cargoData?.shipping_webservice_tracking_code && (

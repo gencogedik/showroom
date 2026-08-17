@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         const host = req.headers.get("host") || "localhost:3000";
         const baseUrl = `${protocol}://${host}`;
 
-        const merchant_ok_url = `${baseUrl}/success?order_id=${merchant_oid}`; // Başarılı dönüş URL
+        const merchant_ok_url = `${baseUrl}/success?order_id=${merchant_oid}&email=${encodeURIComponent(email)}`; // Başarılı dönüş URL
         const merchant_fail_url = `${baseUrl}/checkout?error=paytr_failed`; // Hata dönüş URL
         
         // Sepetteki ürünleri PayTR'nin istediği formata dönüştür

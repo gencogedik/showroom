@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
 
-export default function SuccessPage({ searchParams }: { searchParams: { order_id?: string } }) {
+export default function SuccessPage({ searchParams }: { searchParams: { order_id?: string, email?: string } }) {
     const orderId = searchParams?.order_id || "SİPARİŞ NUMARASI BEKLENİYOR...";
+    const email = searchParams?.email || "";
 
     return (
         <div className="min-h-screen bg-[#e5e5e5] font-mono flex flex-col justify-center items-center p-4 relative overflow-hidden" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
@@ -43,7 +44,7 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
 
                 <div className="flex flex-col gap-4">
                     <Link 
-                        href="/kargo-takip" 
+                        href={`/kargo-takip?order_id=${encodeURIComponent(orderId)}&email=${encodeURIComponent(email)}`} 
                         className="inline-block w-full bg-black text-white font-black text-xl py-4 uppercase tracking-widest border-4 border-black hover:bg-gray-800 transition-colors shadow-[8px_8px_0_0_#000] active:translate-x-1 active:translate-y-1 active:shadow-none"
                     >
                         KARGOMU TAKİP ET
