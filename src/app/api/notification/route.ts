@@ -43,13 +43,16 @@ export async function POST(req: Request) {
                     shipment: {
                         sender_name: "Shuffle Case",
                         sender_email: "hello@shufflecase.com",
-                        sender_tax_number: "1111111111", // Must be 10-11 chars
-                        sender_tax_place: "İstanbul",
+                        sender_tax_number: "32716823642", // Updated with user's TC
+                        sender_tax_place: "Ümraniye",
                         sender_phone: "5555555555",
                         sender_address: "Elmalıkent, Adem Yavuz Cd. No17/A, 34764 Ümraniye/İstanbul",
                         sender_state_id: 34, // İstanbul
-                        sender_city_id: 828, // TODO: Ümraniye'nin gerçek Kargonomi ID'si ile değiştirilecek
+                        sender_city_id: 828, // Dummy/Ümraniye
+                        reference_no: merchant_oid,
+                        ecommerce_provider_order_no: merchant_oid,
                         buyer_name: order.buyer_name,
+                        buyer_email: order.buyer_email || "",
                         buyer_phone: order.buyer_phone,
                         buyer_address: order.buyer_address,
                         buyer_state_id: parseInt(order.buyer_state_id),
@@ -59,17 +62,15 @@ export async function POST(req: Request) {
                 };
 
                 // 3. Send to Kargonomi API
-                const kargonomiToken = process.env.KARGONOMI_BEARER_TOKEN;
-                const kargonomiAppKey = process.env.KARGONOMI_APP_KEY;
+                const kargonomiToken = process.env.KARGONOMI_BEARER_TOKEN || "rDhWbb4GWLdQNtTTWPvHSLWNsLrIgTzb7iKU9elW2e39b486";
 
-                if (kargonomiToken && kargonomiAppKey) {
+                if (kargonomiToken) {
                     try {
                         const kargonomiRes = await fetch("https://app.kargonomi.com.tr/api/v1/shipments", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${kargonomiToken}`,
-                                'X-App-Key': kargonomiAppKey
+                                'Authorization': `Bearer ${kargonomiToken}`
                             },
                             body: JSON.stringify(kargonomiPayload)
                         });
