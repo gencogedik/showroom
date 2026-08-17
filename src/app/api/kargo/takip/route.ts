@@ -63,9 +63,9 @@ export async function POST(request: Request) {
         const data = await response.json();
         const shipments = data.data || [];
 
-        // Find the specific shipment matching the order number AND the exact email
+        // Find the specific shipment matching the order number (or shipment ID) AND the exact email
         const targetShipment = shipments.find((s: any) => 
-            (s.ecommerce_provider_order_no === orderId || s.reference_no === orderId) && 
+            (s.ecommerce_provider_order_no === orderId || s.reference_no === orderId || s.id?.toString() === orderId) && 
             s.buyer_email?.toLowerCase() === email.toLowerCase()
         );
 
