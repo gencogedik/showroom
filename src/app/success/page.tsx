@@ -42,10 +42,12 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
                     })
                     .then(res => res.json())
                     .then(result => {
-                        if (result.data?.tracking_code) {
-                            setTrackingCode(result.data.tracking_code);
+                        // Kargonomi API response is wrapped in result.data, and Kargonomi's own data has tracking_code
+                        const trackingCode = result.data?.data?.tracking_code || result.data?.tracking_code;
+                        if (trackingCode) {
+                            setTrackingCode(trackingCode);
                             // Also update last_order_id to the new tracking code so kargo-takip page finds it easily
-                            localStorage.setItem('last_order_id', result.data.tracking_code);
+                            localStorage.setItem('last_order_id', trackingCode);
                         }
                     })
                     .finally(() => {

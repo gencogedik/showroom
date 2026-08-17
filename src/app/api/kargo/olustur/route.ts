@@ -10,6 +10,7 @@ export async function POST(request: Request) {
             buyer_email,
             buyer_phone, 
             buyer_address, 
+            buyer_district,
             buyer_state_id, 
             buyer_city_id, 
             reference_no,
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
                 buyer_name,
                 buyer_email,
                 buyer_phone: buyer_phone.replace(/[^0-9]/g, "").slice(-10),
-                buyer_address: `${buyer_city_id} - ${buyer_address}`,
+                buyer_address: `${buyer_district || buyer_city_id} - ${buyer_address}`,
                 buyer_state_id: parseInt(buyer_state_id) || 34,
                 buyer_city_id: 1, // Dummy ID
                 packages: packages.map((pkg: any) => ({
