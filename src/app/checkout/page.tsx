@@ -34,60 +34,6 @@ export default function CheckoutPage() {
         });
     };
 
-    const handleFakeSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        if (items.length === 0) {
-            setError("SEPETİNİZ BOŞ!");
-            setTimeout(() => setError(null), 3000);
-            return;
-        }
-
-        if (!formData.buyer_name || !formData.buyer_phone || !formData.buyer_address || !formData.buyer_email || !formData.buyer_district) {
-            setError("LÜTFEN TÜM ALANLARI DOLDURUN!");
-            setTimeout(() => setError(null), 3000);
-            return;
-        }
-
-        setLoading(true);
-        setError(null);
-
-        try {
-            const packages = items.map(item => ({
-                content: `${item.quantity}x ${item.title}`,
-                desi: "1"
-            }));
-
-            const response = await fetch('/api/kargo/olustur', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    packages
-                })
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                setError(result.error || "Sipariş oluşturulamadı!");
-                setLoading(false);
-                setTimeout(() => setError(null), 4000);
-                return;
-            }
-
-            // Success! Clear cart (normally you'd do this, but for demo maybe not strictly necessary)
-            useCartStore.getState().clearCart();
-            
-            setSuccessData(result.data);
-            setLoading(false);
-            
-        } catch (err) {
-            setError("Bir ağ hatası oluştu.");
-            setLoading(false);
-            setTimeout(() => setError(null), 4000);
-        }
-    };
 
     const handlePaytrSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -135,6 +81,10 @@ export default function CheckoutPage() {
                 if (typeof window !== 'undefined') {
                     localStorage.setItem('last_order_id', result.order_id);
                     localStorage.setItem('last_order_email', formData.buyer_email);
+                    
+                    // Save form data for client-side Kargonomi creation on success page
+                    localStorage.setItem('checkout_form', JSON.stringify(formData));
+                    localStorage.setItem('checkout_items', JSON.stringify(items));
                 }
                 // PayTR iframe script'ini ekliyoruz
                 setTimeout(() => {
@@ -289,7 +239,6 @@ export default function CheckoutPage() {
                                         <h3 className="font-black uppercase text-center bg-black text-white p-2 mb-4">💳 Kart Bilgilerinizi Girin</h3>
                                         <iframe src={`https://www.paytr.com/odeme/guvenli/${paytrToken}`} id="paytriframe" frameBorder="0" scrolling="no" style={{ width: '100%' }}></iframe>
                                     </div>
-                                ) : (
                                     <div className="flex flex-col gap-4 mt-6">
                                         <button 
                                             type="button"
@@ -298,15 +247,6 @@ export default function CheckoutPage() {
                                             className={`w-full py-6 text-2xl font-black uppercase tracking-widest border-4 border-black transition-all shadow-[8px_8px_0_0_#000] active:translate-y-1 active:translate-x-1 active:shadow-none ${loading || items.length === 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-black text-white hover:bg-[#ff0000]'}`}
                                         >
                                             {loading ? 'YÜKLENİYOR...' : '💳 KART İLE ÖDE (PAYTR)'}
-                                        </button>
-
-                                        <button 
-                                            type="button"
-                                            onClick={handleFakeSubmit}
-                                            disabled={loading || items.length === 0}
-                                            className={`w-full py-4 text-xl font-bold uppercase tracking-widest border-4 border-black transition-all shadow-[4px_4px_0_0_#000] active:translate-y-1 active:translate-x-1 active:shadow-none bg-white text-black hover:bg-gray-200`}
-                                        >
-                                            🧪 KARGONOMİ TESTİ (SAHTE TAMAMLAMA)
                                         </button>
                                     </div>
                                 )}

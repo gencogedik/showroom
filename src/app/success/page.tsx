@@ -5,15 +5,65 @@ import Link from "next/link";
 export default function SuccessPage({ searchParams }: { searchParams: { order_id?: string, email?: string } }) {
     const [orderId, setOrderId] = useState(searchParams?.order_id || "");
     const [email, setEmail] = useState(searchParams?.email || "");
+    const [trackingCode, setTrackingCode] = useState("");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (!orderId && typeof window !== 'undefined') {
-            setOrderId(localStorage.getItem('last_order_id') || "");
+        let currentOrderId = orderId;
+        if (!currentOrderId && typeof window !== 'undefined') {
+            currentOrderId = localStorage.getItem('last_order_id') || "";
+            setOrderId(currentOrderId);
             setEmail(localStorage.getItem('last_order_email') || "");
+        }
+
+        // Kargo oluşturma isteği
+        if (typeof window !== 'undefined') {
+            const checkoutForm = localStorage.getItem('checkout_form');
+            const checkoutItems = localStorage.getItem('checkout_items');
+            
+            if (checkoutForm && checkoutItems) {
+                setLoading(true);
+                try {
+                    const formData = JSON.parse(checkoutForm);
+                    const items = JSON.parse(checkoutItems);
+                    const packages = items.map((item: any) => ({
+                        content: `${item.quantity}x ${item.title}`,
+                        desi: "1"
+                    }));
+
+                    fetch('/api/kargo/olustur', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            ...formData,
+                            reference_no: currentOrderId,
+                            packages
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.data?.tracking_code) {
+                            setTrackingCode(result.data.tracking_code);
+                            // Also update last_order_id to the new tracking code so kargo-takip page finds it easily
+                            localStorage.setItem('last_order_id', result.data.tracking_code);
+                        }
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                        localStorage.removeItem('checkout_form');
+                        localStorage.removeItem('checkout_items');
+                    });
+                } catch (e) {
+                    console.error("Kargo otomatik oluşturma hatası", e);
+                    setLoading(false);
+                    localStorage.removeItem('checkout_form');
+                    localStorage.removeItem('checkout_items');
+                }
+            }
         }
     }, [orderId]);
 
-    const displayOrderId = orderId || "SİPARİŞ NUMARASI BEKLENİYOR...";
+    const displayOrderId = trackingCode || orderId || "SİPARİŞ NUMARASI BEKLENİYOR...";
 
     return (
         <div className="min-h-screen bg-[#e5e5e5] font-mono flex flex-col justify-center items-center p-4 relative overflow-hidden" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
@@ -29,10 +79,14 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
                     </svg>
                 </div>
 
-                <h1 className="text-4xl md:text-5xl font-black uppercase tracking-widest mb-4">SİPARİŞ ALINDI</h1>
+                <h1 className="text-4xl md:text-5xl font-black uppercase tracking-widest mb-4">
+                    {loading ? "KARGO OLUŞTURULUYOR..." : "SİPARİŞ ALINDI"}
+                </h1>
                 
                 <div className="bg-black text-white p-4 font-bold my-8 uppercase text-sm border-l-4 border-red-500">
-                    Ödemeniz başarıyla gerçekleşti. Kan ve metal kokulu yeni zırhınız (kılıfınız) en kısa sürede yola çıkıyor.
+                    {loading 
+                        ? "Siparişiniz alındı, kargo fişiniz hazırlanıyor lütfen bekleyin..." 
+                        : "Ödemeniz başarıyla gerçekleşti. Kan ve metal kokulu yeni zırhınız (kılıfınız) en kısa sürede yola çıkıyor."}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-left border-4 border-black p-4 mb-4">
@@ -54,10 +108,10 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
 
                 <div className="flex flex-col gap-4">
                     <Link 
-                        href={`/kargo-takip?order_id=${encodeURIComponent(orderId)}&email=${encodeURIComponent(email)}`} 
-                        className="inline-block w-full bg-black text-white font-black text-xl py-4 uppercase tracking-widest border-4 border-black hover:bg-gray-800 transition-colors shadow-[8px_8px_0_0_#000] active:translate-x-1 active:translate-y-1 active:shadow-none"
+                        href={`/kargo-takip?order_id=${encodeURIComponent(trackingCode || orderId)}&email=${encodeURIComponent(email)}`} 
+                        className={`inline-block w-full text-white font-black text-xl py-4 uppercase tracking-widest border-4 border-black transition-colors shadow-[8px_8px_0_0_#000] active:translate-x-1 active:translate-y-1 active:shadow-none ${loading ? 'bg-gray-400 pointer-events-none' : 'bg-black hover:bg-gray-800'}`}
                     >
-                        KARGOMU TAKİP ET
+                        {loading ? 'YÜKLENİYOR...' : 'KARGOMU TAKİP ET'}
                     </Link>
                     <Link 
                         href="/shop" 

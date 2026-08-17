@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { redis } from "@/lib/redis";
 
 export async function POST(req: Request) {
     try {
@@ -49,23 +48,6 @@ export async function POST(req: Request) {
         const paytr_token = hash_str + merchant_salt;
         const token = crypto.createHmac("sha256", merchant_key).update(paytr_token).digest("base64");
 
-        // Sipariş detaylarını Kargonomi için Redis'e kaydet (1 saat geçerli)
-        const orderData = {
-            buyer_name: user_name,
-            buyer_email: email,
-            buyer_phone: user_phone,
-            buyer_address: body.user.address,
-            buyer_state_id: body.user.city, // Kargonomi İl ID'si
-            buyer_city_id: body.user.district || body.user.city, // Dummy/ID
-            items: body.items,
-            amount: payment_amount
-        };
-        try {
-            await redis.set(`order:${merchant_oid}`, JSON.stringify(orderData), 'EX', 3600);
-        } catch (redisErr) {
-            console.error("Redis Hatası (Kargonomi Entegrasyonu için gerekli):", redisErr);
-            // We do NOT throw here so the PayTR checkout can still proceed even if Redis is broken.
-        }
 
         // --- GERÇEK PAYTR İSTEĞİ ---
         const paytrParams = new URLSearchParams();
