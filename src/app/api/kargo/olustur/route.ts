@@ -21,8 +21,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const bearerToken = process.env.KARGONOMI_BEARER_TOKEN;
-        const appKey = process.env.KARGONOMI_APP_KEY;
+        const bearerToken = process.env.KARGONOMI_BEARER_TOKEN || "rDhWbb4GWLdQNtTTWPvHSLWNsLrIgTzb7iKU9elW2e39b486";
 
         // Construct the shipment payload
         // We assume we don't have a warehouse_id, so we must provide sender info.
@@ -49,8 +48,8 @@ export async function POST(request: Request) {
             }
         };
 
-        // If credentials are not set, return mock success for development purposes.
-        if (!bearerToken || !appKey) {
+        // If credentials are not set (which they now are by default), return mock.
+        if (!bearerToken) {
             console.log("Kargonomi API anahtarları bulunamadı. Kargo başarıyla oluşturuldu (Mock) kabul ediliyor.");
             
             // Artificial delay
@@ -74,8 +73,7 @@ export async function POST(request: Request) {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${bearerToken}`,
-                'X-App-Key': appKey
+                'Authorization': `Bearer ${bearerToken}`
             },
             body: JSON.stringify(shipmentPayload)
         });
