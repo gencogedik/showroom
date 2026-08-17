@@ -51,8 +51,8 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
                         return res.json();
                     })
                     .then(result => {
-                        // Kargonomi API response is wrapped in result.data, and Kargonomi's own data has tracking_code
-                        const trackingCode = result.data?.data?.tracking_code || result.data?.tracking_code;
+                        // Kargonomi API response is wrapped in result.data. Draft shipments return 'id', processed return 'tracking_code'
+                        const trackingCode = result.data?.data?.tracking_code || result.data?.data?.id || result.data?.tracking_code || result.data?.id;
                         if (trackingCode) {
                             setTrackingCode(trackingCode);
                             // Also update last_order_id to the new tracking code so kargo-takip page finds it easily
