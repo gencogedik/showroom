@@ -18,7 +18,12 @@ export async function POST(req: Request) {
         const email = body.user.email;
         const user_name = body.user.name;
         const user_address = body.user.address + " " + body.user.city;
-        const user_phone = body.user.phone;
+        
+        let user_phone = body.user.phone.replace(/[^0-9]/g, ""); // Remove non-numeric
+        if (user_phone.startsWith("0")) {
+            user_phone = user_phone.substring(1);
+        }
+
         const user_ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
         
         // Dinamik URL Tespiti (Vercel veya Localhost için otomatik ayarlar)
