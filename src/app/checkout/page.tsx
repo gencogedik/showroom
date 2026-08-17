@@ -132,6 +132,10 @@ export default function CheckoutPage() {
 
             if (result.status === "success" && result.token) {
                 setPaytrToken(result.token);
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('last_order_id', result.order_id);
+                    localStorage.setItem('last_order_email', formData.buyer_email);
+                }
                 // PayTR iframe script'ini ekliyoruz
                 setTimeout(() => {
                     const iframe = document.getElementById('paytriframe') as HTMLIFrameElement;

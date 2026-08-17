@@ -92,6 +92,9 @@ export async function POST(req: Request) {
         });
 
         const result = await paytrResponse.json();
+        if (result.status === "success") {
+            return NextResponse.json({ ...result, order_id: merchant_oid });
+        }
         return NextResponse.json(result);
 
     } catch (error: any) {

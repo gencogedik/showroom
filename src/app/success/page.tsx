@@ -1,9 +1,19 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function SuccessPage({ searchParams }: { searchParams: { order_id?: string, email?: string } }) {
-    const orderId = searchParams?.order_id || "SİPARİŞ NUMARASI BEKLENİYOR...";
-    const email = searchParams?.email || "";
+    const [orderId, setOrderId] = useState(searchParams?.order_id || "");
+    const [email, setEmail] = useState(searchParams?.email || "");
+
+    useEffect(() => {
+        if (!orderId && typeof window !== 'undefined') {
+            setOrderId(localStorage.getItem('last_order_id') || "");
+            setEmail(localStorage.getItem('last_order_email') || "");
+        }
+    }, [orderId]);
+
+    const displayOrderId = orderId || "SİPARİŞ NUMARASI BEKLENİYOR...";
 
     return (
         <div className="min-h-screen bg-[#e5e5e5] font-mono flex flex-col justify-center items-center p-4 relative overflow-hidden" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
@@ -38,7 +48,7 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
 
                 <div className="bg-[#e5e5e5] border-4 border-black p-4 mb-8">
                     <p className="text-sm font-bold text-gray-600 uppercase mb-2">Sipariş Takip Numaranız</p>
-                    <p className="text-2xl font-black font-mono tracking-widest break-all">{orderId}</p>
+                    <p className="text-2xl font-black font-mono tracking-widest break-all">{displayOrderId}</p>
                     <p className="text-xs font-bold text-red-500 mt-2">* Bu numara ve e-posta adresiniz ile kargonuzu takip edebilirsiniz.</p>
                 </div>
 
