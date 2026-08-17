@@ -7,6 +7,7 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
     const [email, setEmail] = useState(searchParams?.email || "");
     const [trackingCode, setTrackingCode] = useState("");
     const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
     useEffect(() => {
         let currentOrderId = orderId;
@@ -40,7 +41,15 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
                             packages
                         })
                     })
-                    .then(res => res.json())
+                    .then(res => {
+                        if (!res.ok) {
+                            // API returned an error status (like 400 or 500)
+                            return res.json().then(errData => {
+                                throw new Error(errData.error || `HTTP Hata: ${res.status}`);
+                            });
+                        }
+                        return res.json();
+                    })
                     .then(result => {
                         // Kargonomi API response is wrapped in result.data, and Kargonomi's own data has tracking_code
                         const trackingCode = result.data?.data?.tracking_code || result.data?.tracking_code;
@@ -48,15 +57,22 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
                             setTrackingCode(trackingCode);
                             // Also update last_order_id to the new tracking code so kargo-takip page finds it easily
                             localStorage.setItem('last_order_id', trackingCode);
+                        } else {
+                            setErrorMsg("Kargonomi takip kodu döndürmedi. Lütfen kargo panelinizi kontrol edin.");
                         }
+                    })
+                    .catch(err => {
+                        console.error("Fetch Hatası:", err);
+                        setErrorMsg(err.message || "Bilinmeyen bir hata oluştu.");
                     })
                     .finally(() => {
                         setLoading(false);
                         localStorage.removeItem('checkout_form');
                         localStorage.removeItem('checkout_items');
                     });
-                } catch (e) {
+                } catch (e: any) {
                     console.error("Kargo otomatik oluşturma hatası", e);
+                    setErrorMsg(e.message || "JSON Parse hatası");
                     setLoading(false);
                     localStorage.removeItem('checkout_form');
                     localStorage.removeItem('checkout_items');
@@ -90,6 +106,13 @@ export default function SuccessPage({ searchParams }: { searchParams: { order_id
                         ? "Siparişiniz alındı, kargo fişiniz hazırlanıyor lütfen bekleyin..." 
                         : "Ödemeniz başarıyla gerçekleşti. Kan ve metal kokulu yeni zırhınız (kılıfınız) en kısa sürede yola çıkıyor."}
                 </div>
+
+                {errorMsg && !loading && (
+                    <div className="bg-red-500 text-white p-4 font-bold my-4 uppercase text-sm border-4 border-black text-left">
+                        <span className="block text-black font-black text-lg border-b-2 border-black mb-2">HATA (KARGO OLUŞMADI):</span>
+                        {errorMsg}
+                    </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-4 text-left border-4 border-black p-4 mb-4">
                     <div>
