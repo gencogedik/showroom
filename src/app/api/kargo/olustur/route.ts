@@ -32,7 +32,7 @@ export async function POST(request: Request) {
             shipment: {
                 sender_name: "Shuffle Case",
                 sender_email: "hello@shufflecase.com",
-                sender_tax_number: "10000000146", // TODO: Gerçek TC Kimlik No veya Vergi No ile değiştirin
+                sender_tax_number: "32716823642",
                 sender_tax_place: "Ümraniye",
                 sender_phone: "5555555555",
                 sender_address: "Elmalıkent, Adem Yavuz Cd. No17/A, 34764 Ümraniye/İstanbul",
