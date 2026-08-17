@@ -47,10 +47,11 @@ export async function POST(req: Request) {
         // Sipariş detaylarını Kargonomi için Redis'e kaydet (1 saat geçerli)
         const orderData = {
             buyer_name: user_name,
+            buyer_email: email,
             buyer_phone: user_phone,
             buyer_address: body.user.address,
             buyer_state_id: body.user.city, // Kargonomi İl ID'si
-            buyer_city_id: body.user.district || body.user.city, // İlçe yoksa ili koy (şimdilik)
+            buyer_city_id: body.user.district || body.user.city, // Dummy/ID
             items: body.items,
             amount: payment_amount
         };
