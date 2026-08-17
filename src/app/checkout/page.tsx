@@ -225,14 +225,7 @@ export default function CheckoutPage() {
                                     />
                                 </div>
 
-                                <div className="mt-8">
-                                    <h3 className="font-black uppercase border-b-2 border-black pb-2 mb-4">Ödeme Yöntemi</h3>
-                                    <div className="bg-black text-white p-4 font-bold uppercase flex items-center justify-between border-4 border-black">
-                                        <span>Kapıda Ödeme / Havale</span>
-                                        <span>✓</span>
-                                    </div>
-                                    <p className="text-xs font-bold text-gray-500 mt-2">* Kredi kartı altyapısı PayTR üzerinden 256-bit şifreleme ile sağlanır.</p>
-                                </div>
+
 
                                 {paytrToken ? (
                                     <div className="mt-6 border-4 border-black bg-white p-2">
