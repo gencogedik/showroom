@@ -239,6 +239,7 @@ export default function CheckoutPage() {
                                         <h3 className="font-black uppercase text-center bg-black text-white p-2 mb-4">💳 Kart Bilgilerinizi Girin</h3>
                                         <iframe src={`https://www.paytr.com/odeme/guvenli/${paytrToken}`} id="paytriframe" frameBorder="0" scrolling="no" style={{ width: '100%' }}></iframe>
                                     </div>
+                                ) : (
                                     <div className="flex flex-col gap-4 mt-6">
                                         <button 
                                             type="button"
