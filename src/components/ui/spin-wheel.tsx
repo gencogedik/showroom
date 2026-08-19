@@ -53,8 +53,8 @@ export function SpinWheel() {
         
         // Calculate rotation needed to land on segmentIndex.
         // The pointer is at the top (0 degrees). We rotate the wheel so the middle of the segment is at the top.
-        // We add extra spins (e.g., 5 full spins = 1800 degrees) for effect.
-        const extraSpins = 5 * 360;
+        // We add extra spins (e.g., 8 full spins = 2880 degrees) for effect.
+        const extraSpins = 8 * 360;
         const targetRotation = extraSpins + (360 - (segmentIndex * segmentAngle)) - (segmentAngle / 2);
         
         setRotation(prev => prev + targetRotation);
@@ -68,7 +68,7 @@ export function SpinWheel() {
             if (SEGMENTS[segmentIndex].discount > 0) {
                 setGlobalDiscount(SEGMENTS[segmentIndex].discount, 15 * 60 * 1000); // 15 mins
             }
-        }, 5000); // 5s spin duration
+        }, 6000); // 6s spin duration
     };
 
     if (hasSpun && !isOpen) return null; // Don't show FAB if already spun
@@ -116,7 +116,7 @@ export function SpinWheel() {
                                     className="w-full h-full rounded-full border-8 border-black overflow-hidden relative shadow-[8px_8px_0_0_#000]"
                                     style={{
                                         transform: `rotate(${rotation}deg)`,
-                                        transition: 'transform 5s cubic-bezier(0.25, 0.1, 0.15, 1)'
+                                        transition: 'transform 6s cubic-bezier(0.25, 0.1, 0.15, 1)'
                                     }}
                                 >
                                     {/* Slices */}

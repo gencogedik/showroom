@@ -66,20 +66,16 @@ export default function IntroAnimation() {
         } catch (e) {}
 
         const targetIndex = Math.floor(Math.random() * TOTAL_IMAGES);
-        const extraSpins = 5; 
+        const extraSpins = 12; // Daha fazla tur atarak hızlı başlasın
         const currentRotation = rotation.get();
         const baseRotation = currentRotation - (currentRotation % 360);
         
-        // We want item 'targetIndex' to be at 0 degrees relative to camera.
-        // Item i is placed at i * anglePerItem.
-        // So container needs to be at - (targetIndex * anglePerItem)
         const targetRotation = baseRotation - (360 * extraSpins) - (targetIndex * anglePerItem);
 
         animate(rotation, targetRotation, {
-            type: "spring",
-            stiffness: 30,
-            damping: 15,
-            mass: 2,
+            type: "tween",
+            ease: [0.25, 0.1, 0.15, 1], // Hızlı başlayıp yavaşlayan CS:GO çarkı hissi
+            duration: 6, // Sesin uzunluğuyla uyumlu (6 saniye)
             onComplete: () => {
                 const discount = 20;
                 useCartStore.getState().setGlobalDiscount(discount, 15 * 60 * 1000);
@@ -88,7 +84,7 @@ export default function IntroAnimation() {
                 setTimeout(() => {
                     setIsSpinning(false);
                     router.push(`/shop/${targetIndex + 1}`);
-                }, 1500);
+                }, 1000); // Durduktan 1 saniye sonra yönlendir
             }
         });
     };
