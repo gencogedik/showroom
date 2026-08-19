@@ -36,8 +36,12 @@ export function SpinWheel() {
         
         // Ses efektini çal
         if (audioRef.current) {
+            audioRef.current.volume = 1.0; // Maksimum ses seviyesi
             audioRef.current.currentTime = 0;
-            audioRef.current.play().catch((e: any) => console.error("Audio failed:", e));
+            const playPromise = audioRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch((e: any) => console.error("Audio failed:", e));
+            }
         }
         
         // Rig the wheel to ALWAYS land on 20% (index 4)
