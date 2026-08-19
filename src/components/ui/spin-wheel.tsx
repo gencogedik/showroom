@@ -33,6 +33,12 @@ export function SpinWheel() {
         if (isSpinning || hasSpun) return;
         setIsSpinning(true);
         
+        // Ses efektini çal
+        try {
+            const audio = new Audio('/sounds/spin-sound.mp3');
+            audio.play().catch(e => console.error("Audio failed:", e));
+        } catch(e) {}
+        
         // Rig the wheel to ALWAYS land on 20% (index 4)
         const segmentIndex = 4;
         const segmentAngle = 360 / SEGMENTS.length;
