@@ -1,15 +1,27 @@
 export type ProductCategory = "Metalik" | "Karanlık" | "Y2K Özel" | "Aksesuar";
 
-const TOTAL_PRODUCTS = 20;
+const uniqueCases = [
+    { id: "1", title: "TITANIUM GHOST", category: "Metalik" },
+    { id: "2", title: "OBSIDIAN ARMOR", category: "Karanlık" },
+    { id: "3", title: "CHROME HEART", category: "Y2K Özel" },
+    { id: "4", title: "CYBER CORE", category: "Metalik" },
+    { id: "5", title: "ACID WASH", category: "Y2K Özel" },
+    { id: "6", title: "LIQUID METAL", category: "Metalik" },
+    { id: "7", title: "MECHA SHIELD", category: "Karanlık" },
+    { id: "8", title: "TOKYO NIGHTS", category: "Y2K Özel" },
+    { id: "9", title: "MINECRAFT LOAF", category: "Y2K Özel" },
+    { id: "10", title: "SPONGE CLOUDS", category: "Y2K Özel" },
+    { id: "11", title: "JAZZ SOUL", category: "Y2K Özel" },
+    { id: "12", title: "VINYL MEMORIES", category: "Y2K Özel" },
+    { id: "13", title: "SURREAL FISH", category: "Y2K Özel" },
+];
 
-const CATEGORIES: ProductCategory[] = ["Metalik", "Karanlık", "Y2K Özel"];
-
-export const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => ({
-    id: (i + 1).toString(),
-    title: `TEXTURE CASE #${(i + 1).toString().padStart(2, '0')}`,
+export const PRODUCTS = uniqueCases.map((c) => ({
+    id: c.id,
+    title: c.title,
     price: 399,
-    imageSrc: `/images/${i + 1}.png`,
-    category: CATEGORIES[i % CATEGORIES.length],
+    imageSrc: `/images/${c.id}.png`,
+    category: c.category as ProductCategory,
     isAccessory: false,
     description: "Endüstriyel metal ve doku detaylı, el yapımı y2k telefon kılıfı. Darbe emici silikon iç katman ve paslanmaz çelik hissiyatlı dış yüzey ile telefonunuzu sanatsal bir zırha dönüştürür."
 }));
