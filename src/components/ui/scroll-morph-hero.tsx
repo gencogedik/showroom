@@ -60,7 +60,7 @@ export default function IntroAnimation() {
 
         // Ses çal
         try {
-            const audio = new Audio('/sounds/spin-sound.mp3?v=2');
+            const audio = new Audio('/sounds/spin-sound.mp3?v=3');
             audio.volume = 1.0;
             audio.play().catch(e => console.log("Audio play failed:", e));
         } catch (e) {}
@@ -75,7 +75,7 @@ export default function IntroAnimation() {
         animate(rotation, targetRotation, {
             type: "tween",
             ease: [0.25, 0.1, 0.15, 1], // Hızlı başlayıp yavaşlayan CS:GO çarkı hissi
-            duration: 6, // Sesin uzunluğuyla uyumlu (6 saniye)
+            duration: 9, // Sesin uzunluğuyla uyumlu (9 saniye)
             onComplete: () => {
                 const discount = 20;
                 useCartStore.getState().setGlobalDiscount(discount, 15 * 60 * 1000);

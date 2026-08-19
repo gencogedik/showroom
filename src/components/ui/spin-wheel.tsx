@@ -68,14 +68,14 @@ export function SpinWheel() {
             if (SEGMENTS[segmentIndex].discount > 0) {
                 setGlobalDiscount(SEGMENTS[segmentIndex].discount, 15 * 60 * 1000); // 15 mins
             }
-        }, 6000); // 6s spin duration
+        }, 9000); // 9s spin duration
     };
 
     if (hasSpun && !isOpen) return null; // Don't show FAB if already spun
 
     return (
         <>
-            <audio ref={audioRef} src="/sounds/spin-sound.mp3?v=4" preload="auto" />
+            <audio ref={audioRef} src="/sounds/spin-sound.mp3?v=5" preload="auto" />
             
             {/* FAB */}
             {!isOpen && !hasSpun && (
@@ -116,7 +116,7 @@ export function SpinWheel() {
                                     className="w-full h-full rounded-full border-8 border-black overflow-hidden relative shadow-[8px_8px_0_0_#000]"
                                     style={{
                                         transform: `rotate(${rotation}deg)`,
-                                        transition: 'transform 6s cubic-bezier(0.25, 0.1, 0.15, 1)'
+                                        transition: 'transform 9s cubic-bezier(0.25, 0.1, 0.15, 1)'
                                     }}
                                 >
                                     {/* Slices */}
