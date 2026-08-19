@@ -57,6 +57,7 @@ export function Header() {
 
                 {/* Center: Desktop Navigation */}
                 <nav className="hidden md:flex items-center gap-12 font-mono bg-white/90 px-8 py-3 border-2 border-black shadow-[4px_4px_0_0_#000] backdrop-blur-sm">
+                    <Link href="/shuffle-match" className="font-black uppercase tracking-widest text-base text-red-500 hover:text-black hover:scale-105 hover:underline underline-offset-4 decoration-2 transition-all flex items-center gap-1">🔥 SHUFFLE MATCH</Link>
                     <Link href="/shop" className="font-black uppercase tracking-widest text-base hover:text-red-500 hover:scale-105 hover:underline underline-offset-4 decoration-2 transition-all">Mağaza</Link>
                     <Link href="/kargo-takip" className="font-black uppercase tracking-widest text-base hover:text-red-500 hover:scale-105 hover:underline underline-offset-4 decoration-2 transition-all">Kargo Takip</Link>
                     <Link href="/hakkimizda" className="font-black uppercase tracking-widest text-base hover:text-red-500 hover:scale-105 hover:underline underline-offset-4 decoration-2 transition-all">Hakkımızda</Link>
@@ -91,6 +92,7 @@ export function Header() {
                         </div>
                         
                         <nav className="flex flex-col gap-6 text-xl font-black uppercase tracking-widest">
+                            <Link href="/shuffle-match" onClick={() => setIsMenuOpen(false)} className="border-b-4 border-black pb-2 text-red-500 hover:text-black flex items-center gap-2">🔥 SHUFFLE MATCH</Link>
                             <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="border-b-4 border-black pb-2 hover:text-red-500">Mağaza</Link>
                             <Link href="/kargo-takip" onClick={() => setIsMenuOpen(false)} className="border-b-4 border-black pb-2 hover:text-red-500">Kargo Takip</Link>
                             <Link href="/hakkimizda" onClick={() => setIsMenuOpen(false)} className="border-b-4 border-black pb-2 hover:text-red-500">Hakkımızda</Link>
