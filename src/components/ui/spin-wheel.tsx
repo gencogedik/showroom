@@ -75,7 +75,7 @@ export function SpinWheel() {
 
     return (
         <>
-            <audio ref={audioRef} src="/sounds/spin-sound.mp3?v=2" preload="auto" />
+            <audio ref={audioRef} src="/shuffle.mp3?v=1" preload="auto" />
             
             {/* FAB */}
             {!isOpen && !hasSpun && (
