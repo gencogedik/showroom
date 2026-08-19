@@ -40,7 +40,10 @@ export function SpinWheel() {
             audioRef.current.currentTime = 0;
             const playPromise = audioRef.current.play();
             if (playPromise !== undefined) {
-                playPromise.catch((e: any) => console.error("Audio failed:", e));
+                playPromise.catch((e: any) => {
+                    console.error("Audio failed:", e);
+                    alert("Ses oynatılamadı: " + e.message);
+                });
             }
         }
         
@@ -72,7 +75,7 @@ export function SpinWheel() {
 
     return (
         <>
-            <audio ref={audioRef} src="/sounds/spin-sound.mp3" preload="auto" />
+            <audio ref={audioRef} src="/sounds/spin-sound.mp3?v=2" preload="auto" />
             
             {/* FAB */}
             {!isOpen && !hasSpun && (
