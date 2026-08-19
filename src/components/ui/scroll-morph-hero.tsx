@@ -75,7 +75,7 @@ export default function IntroAnimation() {
         animate(rotation, targetRotation, {
             type: "tween",
             ease: [0.25, 0.1, 0.15, 1], // Hızlı başlayıp yavaşlayan CS:GO çarkı hissi
-            duration: 9, // Sesin uzunluğuyla uyumlu (9 saniye)
+            duration: 8, // Ses 9 saniye, çark 8 saniyede durup 1 saniye kutlama sesine izin veriyor
             onComplete: () => {
                 const discount = 20;
                 useCartStore.getState().setGlobalDiscount(discount, 15 * 60 * 1000);
@@ -84,7 +84,7 @@ export default function IntroAnimation() {
                 setTimeout(() => {
                     setIsSpinning(false);
                     router.push(`/shop/${targetIndex + 1}`);
-                }, 1000); // Durduktan 1 saniye sonra yönlendir
+                }, 1500); // Durduktan 1.5 saniye sonra yönlendir
             }
         });
     };
