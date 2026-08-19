@@ -20,6 +20,7 @@ export function SpinWheel() {
     const [rotation, setRotation] = useState(0);
     const [result, setResult] = useState<typeof SEGMENTS[0] | null>(null);
     const setGlobalDiscount = useCartStore(state => state.setGlobalDiscount);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     // Persist spin state locally so they can't just refresh
     useEffect(() => {
@@ -34,10 +35,10 @@ export function SpinWheel() {
         setIsSpinning(true);
         
         // Ses efektini çal
-        try {
-            const audio = new Audio('/sounds/spin-sound.mp3');
-            audio.play().catch(e => console.error("Audio failed:", e));
-        } catch(e) {}
+        if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current.play().catch(e => console.error("Audio failed:", e));
+        }
         
         // Rig the wheel to ALWAYS land on 20% (index 4)
         const segmentIndex = 4;
@@ -67,6 +68,8 @@ export function SpinWheel() {
 
     return (
         <>
+            <audio ref={audioRef} src="/sounds/spin-sound.mp3" preload="auto" />
+            
             {/* FAB */}
             {!isOpen && !hasSpun && (
                 <button
