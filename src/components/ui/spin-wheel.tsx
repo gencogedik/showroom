@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/cartStore';
 
@@ -37,7 +37,7 @@ export function SpinWheel() {
         // Ses efektini çal
         if (audioRef.current) {
             audioRef.current.currentTime = 0;
-            audioRef.current.play().catch(e => console.error("Audio failed:", e));
+            audioRef.current.play().catch((e: any) => console.error("Audio failed:", e));
         }
         
         // Rig the wheel to ALWAYS land on 20% (index 4)
