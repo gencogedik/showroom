@@ -60,7 +60,7 @@ export default function IntroAnimation() {
 
         // Ses çal
         try {
-            const audio = new Audio('/sounds/spin-sound.mp3');
+            const audio = new Audio('/sounds/spin-sound.mp3?v=2');
             audio.volume = 1.0;
             audio.play().catch(e => console.log("Audio play failed:", e));
         } catch (e) {}
