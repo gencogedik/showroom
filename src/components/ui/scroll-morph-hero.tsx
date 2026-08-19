@@ -58,6 +58,13 @@ export default function IntroAnimation() {
         setIsSpinning(true);
         setWonDiscount(null);
 
+        // Ses çal
+        try {
+            const audio = new Audio('/shuffle.mp3');
+            audio.volume = 1.0;
+            audio.play().catch(e => console.log("Audio play failed:", e));
+        } catch (e) {}
+
         const targetIndex = Math.floor(Math.random() * TOTAL_IMAGES);
         const extraSpins = 5; 
         const currentRotation = rotation.get();
