@@ -24,14 +24,6 @@ const uniqueCases = [
     { id: "21", title: "Y2K AURA", category: "Y2K Özel", ext: "png" },
     { id: "22", title: "GALACTIC CHROME", category: "Metalik", ext: "png" },
     { id: "23", title: "MIDNIGHT RAVE", category: "Karanlık", ext: "png" },
-    { id: "24", title: "RETRO FUTURE", category: "Y2K Özel", ext: "png" },
-    { id: "25", title: "DIGITAL CAMO", category: "Y2K Özel", ext: "png" },
-    { id: "26", title: "FLOPPY DISK", category: "Y2K Özel", ext: "png" },
-    { id: "27", title: "DIAL UP", category: "Y2K Özel", ext: "png" },
-    { id: "28", title: "LASER DISCO", category: "Y2K Özel", ext: "png" },
-    { id: "29", title: "TOXIC WASTE", category: "Y2K Özel", ext: "png" },
-    { id: "30", title: "NEON TIGER", category: "Y2K Özel", ext: "png" },
-    { id: "31", title: "PLASTIC LOVE", category: "Y2K Özel", ext: "png" },
 ];
 
 export const PRODUCTS = uniqueCases.map((c) => ({
