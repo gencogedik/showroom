@@ -132,7 +132,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                                         alt={`${product.title} - Görsel ${currentImageIndex + 1}`} 
                                         fill
                                         sizes="(max-width: 1024px) 100vw, 50vw"
-                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                        className="object-cover scale-125 transition-transform duration-500 group-hover:scale-150"
                                     />
 
                                     {/* Noise overlay for texture */}

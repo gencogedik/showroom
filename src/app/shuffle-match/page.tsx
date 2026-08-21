@@ -314,7 +314,7 @@ function SwipeableCard({ product, isTop, onSwipe, index }: { product: any, isTop
             exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
         >
             <div className="relative w-full h-[80%] bg-[#f5f5f5] border-2 border-black overflow-hidden pointer-events-none">
-                <Image src={product.imageSrc} alt={product.title} fill className="object-cover p-4" />
+                <Image src={product.imageSrc} alt={product.title} fill className="object-cover scale-125" />
                 
                 {/* Stamps */}
                 <motion.div 

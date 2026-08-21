@@ -28,7 +28,7 @@ export function ProductCard({ id, title, price, imageSrc }: ProductCardProps) {
                         alt={title} 
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-110 transition-transform duration-500" 
+                        className="object-cover scale-125 group-hover:scale-150 transition-transform duration-500" 
                     />
                     
                     {/* Noise overlay for texture */}
