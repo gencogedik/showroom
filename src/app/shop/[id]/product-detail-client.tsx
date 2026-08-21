@@ -94,7 +94,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
     const seconds = Math.floor((timeRemaining % 60000) / 1000);
 
     return (
-        <div className="min-h-screen bg-[#e5e5e5] font-mono selection:bg-red-500 selection:text-white pb-24 overflow-x-hidden" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
+        <div className="relative min-h-screen bg-[#e5e5e5] font-mono selection:bg-red-500 selection:text-white pb-24 overflow-x-hidden w-full max-w-[100vw]" style={{ backgroundImage: 'radial-gradient(#c0c0c0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
             <Header />
 
             {isTimerActive && (
